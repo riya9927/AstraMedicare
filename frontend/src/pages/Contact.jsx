@@ -14,7 +14,7 @@ const Contact = () => {
 };
 
 const Hero = () => {
-  
+
   return (
     <div className="relative bg-blue-800 text-white">
       <div
@@ -47,18 +47,20 @@ const ContactInfo = () => {
             icon={<Mail className="w-6 h-6" />}
             title="Email Address"
             details={[
-              'info@astramedicare.com',
-              'support@astramedicare.com'
+              <a href="mailto:info@astramedicare.com" key="1">info@astramedicare.com</a>,
+              <a href="mailto:support@astramedicare.com" key="2">support@astramedicare.com</a>
             ]}
           />
+
           <ContactCard
             icon={<Phone className="w-6 h-6" />}
             title="Phone Number"
             details={[
-              '+91 1234567890',
-              '+91 2345678901'
+              <a  href='tel:1234567890'>+91 1234567890</a>,
+              <a  href='tel:2345678901'>+91 2345678901</a>
             ]}
           />
+
           <ContactCard
             icon={<MapPin className="w-6 h-6" />}
             title="Location"
@@ -182,14 +184,14 @@ const CallToAction = () => {
           <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
             Schedule your complimentary consultation today and take the first step towards better health with AstraMedicare.
           </p>
-          <button 
+          <button
             onClick={() => setIsModalOpen(true)}
             className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-lg font-semibold transition-colors duration-300"
           >
             Book an Appointment
           </button>
-          <MedicalAppointmentModal 
-            isOpen={isModalOpen} 
+          <MedicalAppointmentModal
+            isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             primaryColor="blue"
             onSubmit={handleAppointmentSubmit}
