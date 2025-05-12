@@ -229,7 +229,7 @@ const Navbar = () => {
                     </p>
                     <p
                       onClick={() => {
-                        navigate('my-appoitnments');
+                        navigate('my-appointments');
                         setShowDropdown(false);
                       }}
                       className="hover:text-black cursor-pointer transition-colors duration-300"
@@ -306,6 +306,7 @@ const Navbar = () => {
             </ul>
           </div>
         )}
+        
       </div>
     </div>
   );

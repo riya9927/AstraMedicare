@@ -81,7 +81,7 @@ const WhoWeAre = () => {
             </p>
 
             <div className="pt-2">
-              <button
+              <button onClick={() => window.open("https://astramedicare-aboutus.my.canva.site/", "_blank")} 
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full shadow-md transition-all duration-300 transform hover:-translate-y-1 text-lg"
               >
                 Learn More

@@ -170,7 +170,7 @@ const CallToAction = () => {
       <div className="container mx-auto px-6">
         <div className="bg-blue-600 rounded-2xl p-12 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Get Your Free Medical Checkup
+            Get Your Medical Checkup
           </h2>
           <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
             Schedule your complimentary consultation today and take the first step towards better health with AstraMedicare.
