@@ -82,6 +82,53 @@ const MedicalAppointmentModal = ({
   // Don't render anything if modal is closed
   if (!isOpen) return null;
 
+  // Get the correct color classes based on primaryColor
+  const getColorClasses = () => {
+    // Map for gradient backgrounds
+    const gradientBgMap = {
+      blue: "bg-gradient-to-r from-blue-600 to-blue-800",
+      red: "bg-gradient-to-r from-red-600 to-red-800",
+      green: "bg-gradient-to-r from-green-600 to-green-800",
+      purple: "bg-gradient-to-r from-purple-600 to-purple-800",
+      pink: "bg-gradient-to-r from-pink-600 to-pink-800",
+      yellow: "bg-gradient-to-r from-yellow-600 to-yellow-800",
+      indigo: "bg-gradient-to-r from-indigo-600 to-indigo-800",
+      gray: "bg-gradient-to-r from-gray-600 to-gray-800"
+    };
+
+    // Map for text colors
+    const textColorMap = {
+      blue: "text-blue-100",
+      red: "text-red-100",
+      green: "text-green-100",
+      purple: "text-purple-100",
+      pink: "text-pink-100",
+      yellow: "text-yellow-100",
+      indigo: "text-indigo-100",
+      gray: "text-gray-100"
+    };
+
+    // Map for button backgrounds
+    const buttonBgMap = {
+      blue: "bg-blue-600 hover:bg-blue-700",
+      red: "bg-red-600 hover:bg-red-700",
+      green: "bg-green-600 hover:bg-green-700",
+      purple: "bg-purple-600 hover:bg-purple-700",
+      pink: "bg-pink-600 hover:bg-pink-700",
+      yellow: "bg-yellow-600 hover:bg-yellow-700",
+      indigo: "bg-indigo-600 hover:bg-indigo-700",
+      gray: "bg-gray-600 hover:bg-gray-700"
+    };
+
+    return {
+      gradient: gradientBgMap[primaryColor] || gradientBgMap.blue,
+      text: textColorMap[primaryColor] || textColorMap.blue,
+      button: buttonBgMap[primaryColor] || buttonBgMap.blue
+    };
+  };
+
+  const colorClasses = getColorClasses();
+
   // Modal markup
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" 
@@ -102,7 +149,7 @@ const MedicalAppointmentModal = ({
           <>
             <div className="relative">
               {/* Header with gradient background */}
-              <div className={`bg-gradient-to-r from-${primaryColor}-600 to-${primaryColor}-800 p-6 rounded-t-xl`}>
+              <div className={`${colorClasses.gradient} p-6 rounded-t-xl`}>
                 <button 
                   onClick={onClose}
                   className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors duration-300"
@@ -110,7 +157,7 @@ const MedicalAppointmentModal = ({
                   <X className="w-6 h-6" />
                 </button>
                 <h2 className="text-2xl font-bold text-white">Medical Checkup Appointment</h2>
-                <p className={`text-${primaryColor}-100 mt-1`}>Schedule your comprehensive health assessment</p>
+                <p className={`${colorClasses.text} mt-1`}>Schedule your comprehensive health assessment</p>
                 
                 {/* Progress indicator */}
                 <div className="flex justify-between mt-6">
@@ -267,7 +314,7 @@ const MedicalAppointmentModal = ({
                     <button
                       type="button"
                       onClick={nextStep}
-                      className={`ml-auto px-6 py-2 bg-${primaryColor}-600 hover:bg-${primaryColor}-700 text-white rounded-lg transition-colors duration-300`}
+                      className={`ml-auto px-6 py-2 ${colorClasses.button} text-white rounded-lg transition-colors duration-300`}
                     >
                       Next
                     </button>
@@ -275,7 +322,7 @@ const MedicalAppointmentModal = ({
                     <button
                       type="button"
                       onClick={handleSubmit}
-                      className={`ml-auto px-6 py-2 bg-${primaryColor}-600 hover:bg-${primaryColor}-700 text-white rounded-lg transition-colors duration-300`}
+                      className={`ml-auto px-6 py-2 ${colorClasses.button} text-white rounded-lg transition-colors duration-300`}
                     >
                       Book Appointment
                     </button>
