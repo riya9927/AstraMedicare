@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
+import MedicalAppointmentModal from '../components/MedicalAppointmentModal';
 
 const Contact = () => {
   return (
@@ -13,6 +14,7 @@ const Contact = () => {
 };
 
 const Hero = () => {
+  
   return (
     <div className="relative bg-blue-800 text-white">
       <div
@@ -165,6 +167,11 @@ const ContactForm = () => {
 };
 
 const CallToAction = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleAppointmentSubmit = (formData) => {
+    console.log("Appointment data:", formData);
+    // Here you would send the data to your backend/API
+  };
   return (
     <div className="bg-gray-50 py-16">
       <div className="container mx-auto px-6">
@@ -175,9 +182,18 @@ const CallToAction = () => {
           <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
             Schedule your complimentary consultation today and take the first step towards better health with AstraMedicare.
           </p>
-          <button className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-lg font-semibold transition-colors duration-300">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-lg font-semibold transition-colors duration-300"
+          >
             Book an Appointment
           </button>
+          <MedicalAppointmentModal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)}
+            primaryColor="blue"
+            onSubmit={handleAppointmentSubmit}
+          />
         </div>
       </div>
     </div>
