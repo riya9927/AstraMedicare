@@ -134,7 +134,7 @@ const MedicalAppointmentModal = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" 
          onClick={onClose}>
       <div 
-        className={`bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto transform transition-all duration-500 ${animationClass}`}
+        className={`bg-white rounded-xl shadow-2xl max-w-md mx-auto transform transition-all duration-500 ${animationClass}`}
         onClick={(e) => e.stopPropagation()}
       >
         {isSubmitted ? (
