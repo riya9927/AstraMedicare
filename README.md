@@ -18,12 +18,12 @@ AstraMedicare is a modern and responsive healthcare website designed to simplify
 
 ### Frontend
 - HTML5, CSS3, JavaScript
-- React.js / Next.js *(update if needed)*
-- Tailwind CSS / Bootstrap *(based on your styling choice)*
+- React.js
+- Tailwind CSS
 
 ### Backend
-- Node.js with Express.js *(or Django/Flask if used)*
-- MongoDB / MySQL *(select based on your DB)*
+- Node.js with Express.js 
+- MongoDB
 
 ### Others
 - JWT for authentication
