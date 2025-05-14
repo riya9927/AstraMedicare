@@ -1,6 +1,6 @@
 # AstraMedicare 
 
-AstraMedicare is a modern and responsive healthcare website designed to simplify the process of connecting patients with healthcare services. It allows users to book doctor appointments, order medicines online, access electronic health records, and much more — all from the comfort of their home.
+AstraMedicare is a modern and responsive healthcare website designed to simplify the process of connecting patients with healthcare services. It allows users to book doctor appointments, access electronic health records, and much more — all from the comfort of their home.
 
 ---
 
