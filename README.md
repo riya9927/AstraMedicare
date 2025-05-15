@@ -44,13 +44,3 @@ cd AstraMedicare
 * API tested with Postman
 * UI tested across modern browsers
 
----
-
-## 📂 Folder Structure
-
-```
-AstraMedicare/
-├── backend/        # Node.js + Express API
-├── frontend/       # React.js client
-├── admin/          # React.js Admin
-└── README.md
