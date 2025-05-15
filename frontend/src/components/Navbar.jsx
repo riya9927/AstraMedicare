@@ -5,12 +5,10 @@ import { AppContext } from '../context/AppContext';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { token, setToken } = useContext(AppContext);
+  const { token, setToken, userData } = useContext(AppContext);
   const [showMenu, setShowMenu] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
-
-  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -28,18 +26,20 @@ const Navbar = () => {
   const handleLogout = () => {
     // Clear token from context
     setToken(false);
-    
-    localStorage.removeItem('token')
+    localStorage.removeItem('token');
   };
+
+  // Get the profile image from userData if available, otherwise use default
+  const profileImage = userData && userData.image ? userData.image : assets.profile_pic;
 
   return (
     <div className="sticky top-0 z-50 bg-white shadow-md">
       <div className="flex items-center justify-between text-sm py-4 border-b border-gray-300 px-4 md:px-10 lg:px-20">
-        <img 
-          onClick={() => navigate('/')} 
-          className="w-36 cursor-pointer transition-transform duration-300 hover:scale-105" 
-          src={assets.logo} 
-          alt="Logo" 
+        <img
+          onClick={() => navigate('/')}
+          className="w-36 cursor-pointer transition-transform duration-300 hover:scale-105"
+          src={assets.logo}
+          alt="Logo"
         />
 
         <ul className="hidden md:flex items-center gap-8 font-medium text-gray-700">
@@ -72,10 +72,11 @@ const Navbar = () => {
               onClick={() => setShowDropdown(!showDropdown)}
             >
               <img
-                className="w-8 h-8 rounded-full transition-transform duration-300 hover:scale-110"
-                src={assets.profile_pic}
+                className="w-10 h-10 rounded-full object-cover transition-transform duration-300 hover:scale-110"
+                src={profileImage}
                 alt="Profile"
               />
+
               <img
                 className={`w-2.5 transition-transform duration-300 ${showDropdown ? 'rotate-180' : ''}`}
                 src={assets.dropdown_icon}
@@ -158,8 +159,7 @@ const Navbar = () => {
                   to={link.to}
                   onClick={() => setShowMenu(false)}
                   className={({ isActive }) =>
-                    `block py-2 px-4 rounded transition-all duration-300 hover:bg-gray-200 ${
-                      isActive ? 'bg-gray-200 text-gray-900' : ''
+                    `block py-2 px-4 rounded transition-all duration-300 hover:bg-gray-200 ${isActive ? 'bg-gray-200 text-gray-900' : ''
                     }`
                   }
                 >
