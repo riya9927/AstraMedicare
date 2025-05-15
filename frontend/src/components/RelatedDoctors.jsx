@@ -20,7 +20,7 @@ const RelatedDoctors = ({ speciality, docId }) => {
             {relDoc.slice(0, 5).map((item, index) => (
                 <div
                     key={index}
-                    onClick={() => navigate(`/appointment/${item._id}`)}
+                    onClick={() => navigate(`/appointments/${item._id}`)}
                     className='border border-[#a5bfd0] rounded-xl overflow-hidden cursor-pointer bg-white shadow-md hover:shadow-lg transform hover:-translate-y-2 transition-all duration-300'
                 >
                     <div className='h-56 md:h-60 lg:-64 overflow-hidden'>

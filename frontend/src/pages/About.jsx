@@ -229,7 +229,7 @@ const Statistics = () => {
           />
           <StatItem 
             icon={<UserPlus className="w-12 h-12 text-blue-500" />}
-            number="50+"
+            number="100+"
             label="SPECIALIST DOCTORS"
           />
         </div>
