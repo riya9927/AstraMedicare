@@ -1,6 +1,8 @@
 # AstraMedicare 🏥💊
 
-AstraMedicare is an intelligent, AI-powered medical recommendation and e-commerce platform designed to provide users with smart medicine suggestions, reliable health information, and seamless purchasing—all in one place.
+## Full Stack Doctor Appointment Booking System
+
+Developed a full-stack Doctor Appointment Booking System using the MERN stack, designed to streamline the online consultation experience for patients, doctors, and admins. The application features three-level authentication for Patients, Doctors, and Admins. Patients can book, reschedule, or cancel appointments, view health records, and make payments online. Doctors can manage appointments, earnings, and update profiles, while Admins oversee system-wide activity and doctor management.
 
 ---
 
