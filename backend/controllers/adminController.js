@@ -105,24 +105,20 @@ const updateDoctor = async (req, res) => {
       address
     } = req.body;
 
-    // Validate email format if changed
     if (email && !validator.isEmail(email)) {
       return res.json({ success: false, message: "Invalid email format" });
     }
 
-    // Validate password strength if changed
     if (password && password.length < 8) {
       return res.json({ success: false, message: "Password too short" });
     }
 
-    // Upload new image if provided
     let imageUrl = existingDoctor.image;
     if (req.file) {
       const imageUpload = await cloudinary.uploader.upload(req.file.path, { resource_type: "image" });
       imageUrl = imageUpload.secure_url;
     }
 
-    // Prepare updated fields
     const updatedData = {
       name,
       email,
@@ -136,7 +132,6 @@ const updateDoctor = async (req, res) => {
       image: imageUrl,
     };
 
-    // Hash password if provided
     if (password) {
       const salt = await bcrypt.genSalt(10);
       updatedData.password = await bcrypt.hash(password, salt);
@@ -186,7 +181,6 @@ const appointmentCancel = async (req, res) => {
     const appointmentData = await appointmentModel.findById(appointmentId)
 
     await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
-    // releasing doctor slot 
     const { docId, slotDate, slotTime } = appointmentData
     const doctorData = await doctorModel.findById(docId)
     let slots_booked = doctorData.slots_booked
@@ -232,54 +226,36 @@ const addPatient = async (req, res) => {
       address, 
       emergencyContact 
     } = req.body;
-
-    // Check required fields
     if (!name || !email || !password) {
       return res.json({ success: false, message: "Missing required details" });
     }
-
-    // Validate email format
     if (!validator.isEmail(email)) {
       return res.json({ success: false, message: "Please enter a valid email." });
     }
-
-    // Validate password strength
     if (password.length < 8) {
       return res.json({ success: false, message: "Please enter a strong password (at least 8 characters)" });
     }
-
-    // Check if patient with email already exists
     const existingPatient = await userModel.findOne({ email });
     if (existingPatient) {
       return res.json({ success: false, message: "A patient with this email already exists" });
     }
-
-    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Process image if provided
     let imageUrl = "";
     if (req.file) {
       const imageUpload = await cloudinary.uploader.upload(req.file.path, { resource_type: "image" });
       imageUrl = imageUpload.secure_url;
     }
-
-    // Create patient data object
     const patientData = {
       name,
       email,
       password: hashedPassword,
       image: imageUrl
     };
-
-    // Add optional fields if provided
     if (phone) patientData.phone = phone;
     if (gender) patientData.gender = gender;
     if (dob) patientData.dob = new Date(dob);
     if (bloodGroup) patientData.bloodGroup = bloodGroup;
-    
-    // Parse and add address if provided
     if (address) {
       try {
         patientData.address = JSON.parse(address);
@@ -288,8 +264,6 @@ const addPatient = async (req, res) => {
         return res.json({ success: false, message: "Invalid address format" });
       }
     }
-    
-    // Parse and add emergency contact if provided
     if (emergencyContact) {
       try {
         patientData.emergencyContact = JSON.parse(emergencyContact);
@@ -298,8 +272,6 @@ const addPatient = async (req, res) => {
         return res.json({ success: false, message: "Invalid emergency contact format" });
       }
     }
-
-    // Create and save new patient
     const newPatient = new userModel(patientData);
     await newPatient.save();
 
@@ -326,6 +298,7 @@ const allPatients = async (req, res) => {
   }
 };
 
+// API to delete patients 
 const deletePatient = async (req, res) => {
   try {
     const patientId = req.params.id;
@@ -335,7 +308,6 @@ const deletePatient = async (req, res) => {
       return res.status(404).json({ success: false, message: "Patient not found" });
     }
 
-    // Also delete any appointments associated with this patient
     await appointmentModel.deleteMany({ userId: patientId });
 
     res.json({ success: true, message: "Patient deleted successfully" });
@@ -345,4 +317,83 @@ const deletePatient = async (req, res) => {
   }
 };
 
-export { addDoctor, loginAdmin, allDoctors, updateDoctor, deleteDoctor, appointmentsAdmin, appointmentCancel,adminDashboard ,addPatient,allPatients,deletePatient };
+// API to update a patient
+const updatePatient = async (req, res) => {
+  try {
+    const patientId = req.params.id;
+    const existingPatient = await userModel.findById(patientId);
+
+    if (!existingPatient) {
+      return res.status(404).json({ success: false, message: "Patient not found" });
+    }
+
+    const {
+      name,
+      email,
+      password,
+      phone,
+      gender,
+      dob,
+      bloodGroup,
+      address,
+      emergencyContact
+    } = req.body;
+    if (email && !validator.isEmail(email)) {
+      return res.json({ success: false, message: "Invalid email format" });
+    }
+    if (password && password.length < 8) {
+      return res.json({ success: false, message: "Password must be at least 8 characters" });
+    }
+    let imageUrl = existingPatient.image;
+    if (req.file) {
+      const imageUpload = await cloudinary.uploader.upload(req.file.path, { resource_type: "image" });
+      imageUrl = imageUpload.secure_url;
+    }
+    const updatedData = { image: imageUrl };
+    
+    if (name) updatedData.name = name;
+    if (email) updatedData.email = email;
+    if (phone) updatedData.phone = phone;
+    if (gender) updatedData.gender = gender;
+    if (dob) updatedData.dob = new Date(dob);
+    if (bloodGroup) updatedData.bloodGroup = bloodGroup;
+    
+    if (address) {
+      try {
+        updatedData.address = JSON.parse(address);
+      } catch (error) {
+        return res.json({ success: false, message: "Invalid address format" });
+      }
+    }
+    
+    if (emergencyContact) {
+      try {
+        updatedData.emergencyContact = JSON.parse(emergencyContact);
+      } catch (error) {
+        return res.json({ success: false, message: "Invalid emergency contact format" });
+      }
+    }
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updatedData.password = await bcrypt.hash(password, salt);
+    }
+
+    const updatedPatient = await userModel.findByIdAndUpdate(
+      patientId, 
+      updatedData, 
+      { new: true }
+    );
+
+    res.json({ 
+      success: true, 
+      message: "Patient updated successfully", 
+      patientId: updatedPatient.patientId 
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+export { addDoctor, loginAdmin, allDoctors, updateDoctor, deleteDoctor, appointmentsAdmin, appointmentCancel,adminDashboard ,addPatient,allPatients,deletePatient,updatePatient  };

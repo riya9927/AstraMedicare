@@ -34,7 +34,6 @@ const DoctorsList = () => {
     getAllDoctors();
   };
 
-  // Apply search and filter
   const filteredDoctors = doctors.filter((doctor) => {
     const matchesName = doctor.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSpeciality = filterSpeciality
@@ -78,7 +77,6 @@ const DoctorsList = () => {
 
       <h1 className="text-4xl font-bold text-blue-800 mb-10 text-center">Doctor Directory</h1>
 
-      {/* Delete Confirmation Modal */}
       {deleteConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-8 w-full max-w-md shadow-lg animate-fade-in">
@@ -104,7 +102,6 @@ const DoctorsList = () => {
         </div>
       )}
 
-      {/* View Doctor Modal */}
       {viewDoctor && (
         <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 overflow-auto">
           <div className="bg-white rounded-xl p-8 w-full max-w-3xl shadow-lg animate-fade-in my-8 max-h-screen overflow-y-auto">
@@ -175,7 +172,6 @@ const DoctorsList = () => {
         </div>
       )}
 
-      {/* Update Doctor Modal */}
       {editDoctor && (
         <UpdateDoctor
           doctor={editDoctor}
@@ -184,7 +180,6 @@ const DoctorsList = () => {
         />
       )}
 
-      {/* Doctor Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredDoctors.length === 0 ? (
           <p className="text-center text-gray-500 col-span-full">No doctors found.</p>
