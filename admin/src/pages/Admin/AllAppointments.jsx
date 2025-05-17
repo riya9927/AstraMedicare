@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AdminContext } from '../../context/AdminContext';
 import { AppContext } from '../../context/AppContext';
 import { assets } from '../../assets/assets';
+import { Trash2 } from 'lucide-react';
 
 const AllAppointments = () => {
   const { appointments, aToken, getAllAppointments, cancelAppointment } = useContext(AdminContext);
@@ -80,14 +81,10 @@ const AllAppointments = () => {
                 ) : (
                   <button 
                     onClick={() => cancelAppointment(item._id)}
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors focus:outline-none"
+                    className="text-red-600 hover:text-red-900 flex items-center"
                     title="Cancel Appointment"
                   >
-                    <img 
-                      src={assets.cancel_icon} 
-                      alt="Cancel" 
-                      className="h-5 w-5" 
-                    />
+                    <Trash2 size={16} className="mr-1" />Delete
                   </button>
                 )}
               </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AdminContext } from '../../context/AdminContext';
 import UpdatePatient from './UpdatePatient';
-import { Search, Filter, SortAsc, SortDesc, Trash2, X, Phone, Mail, MapPin, Calendar, Clock, User, Activity, AlertCircle } from 'lucide-react';
+import { Search, Filter, SortAsc, SortDesc, Trash2, X, Phone, Mail,  Calendar } from 'lucide-react';
 
 const PatientsList = () => {
   const { patients, getAllPatients, aToken, deletePatient } = useContext(AdminContext);
@@ -118,7 +118,6 @@ const PatientsList = () => {
     // Apply sorting
     if (sortConfig.key) {
       filtered.sort((a, b) => {
-        // Handle possible undefined values
         const valueA = a[sortConfig.key] || '';
         const valueB = b[sortConfig.key] || '';
 
