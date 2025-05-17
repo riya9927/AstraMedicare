@@ -9,6 +9,7 @@ const AdminContextProvider = (props) => {
 
     const [aToken, setAToken] = useState(localStorage.getItem('aToken') ? localStorage.getItem('aToken') : '')
     const [doctors, setDoctors] = useState([])
+    const [patients, setPatients] = useState([])
     const [appointments, setAppointments] = useState([])
     const [dashData,setDashData]=useState(false)
     const backendUrl = import.meta.env.VITE_BACKEND_URL
@@ -38,7 +39,7 @@ const AdminContextProvider = (props) => {
 
             if (data.success) {
                 toast.success(data.message);
-                getAllDoctors(); // Refresh frontend list
+                getAllDoctors(); 
             } else {
                 toast.error(data.message);
             }
@@ -59,7 +60,7 @@ const AdminContextProvider = (props) => {
 
             if (data.success) {
                 toast.success(data.message || "Doctor updated successfully");
-                await getAllDoctors(); // Refresh list
+                await getAllDoctors();
                 return { success: true };
             } else {
                 toast.error(data.message || "Failed to update doctor");
@@ -123,6 +124,40 @@ const AdminContextProvider = (props) => {
         }
     }
 
+    const getAllPatients = async () => {
+        try {
+            const { data } = await axios.post(backendUrl + '/api/admin/all-patient', {}, { headers: { aToken } })
+            if (data.success) {
+                setPatients(data.patients)
+               
+                
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    const deletePatient = async (id) => {
+        try {
+            const { data } = await axios.delete(`${backendUrl}/api/admin/delete-patient/${id}`, {
+                headers: {
+                    aToken,
+                },
+            });
+            if (data.success) {
+                toast.success(data.message);
+                getAllPatients(); 
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.error("Error deleting doctor", error);
+            toast.error("Failed to delete doctor");
+        }
+    };
+
     const value = {
         aToken, setAToken,
         backendUrl, doctors,
@@ -131,7 +166,9 @@ const AdminContextProvider = (props) => {
         appointments,
         getAllAppointments,
         cancelAppointment,
-        dashData,getDashData
+        dashData,getDashData,
+        patients, getAllPatients,
+        deletePatient
     }
 
     return (

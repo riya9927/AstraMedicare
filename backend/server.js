@@ -21,7 +21,6 @@ app.use(cors())
 app.use('/api/admin',adminRouter)
 app.use('/api/user',userRouter)
 app.use('/api/doctor',doctorRouter)
-//localhost:4000/api/admin/add-doctor
 
 app.get('/',(req,res)=>{
     res.send("API working")

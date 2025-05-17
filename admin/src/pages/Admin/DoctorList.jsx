@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AdminContext } from '../../context/AdminContext';
 import UpdateDoctor from './UpdateDoctor';
+import { Eye, Pencil, Trash2, Search, Filter } from 'lucide-react';
 
 const DoctorsList = () => {
   const { doctors, aToken, getAllDoctors, deleteDoctor } = useContext(AdminContext);
@@ -45,28 +46,35 @@ const DoctorsList = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 text-gray-800">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-        <input
-          type="text"
-          placeholder="Search doctor by name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/2 p-3 rounded-md bg-gray-100 text-gray-800 border border-gray-300"
-        />
+        <div className="relative w-full md:w-1/2">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <input
+            type="text"
+            placeholder="Search doctor by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 p-3 rounded-md bg-gray-100 text-gray-800 border border-gray-300"
+          />
+        </div>
 
-        <select
-          value={filterSpeciality}
-          onChange={(e) => setFilterSpeciality(e.target.value)}
-          className="w-full md:w-1/3 p-3 rounded-md bg-gray-100 text-gray-800 border border-gray-300"
-        >
-          <option value="">Filter by Speciality</option>
-          <option value="General physician">General physician</option>
-          <option value="Gynecologist">Gynecologist</option>
-          <option value="Dermatologist">Dermatologist</option>
-          <option value="Pediatricians">Pediatricians</option>
-          <option value="Neurologist">Neurologist</option>
-          <option value="Gastroenterologist">Gastroenterologist</option>
-        </select>
+        <div className="relative w-full md:w-1/3">
+          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <select
+            value={filterSpeciality}
+            onChange={(e) => setFilterSpeciality(e.target.value)}
+            className="w-full pl-10 pr-4 p-3 rounded-md bg-gray-100 text-gray-800 border border-gray-300"
+          >
+            <option value="">Filter by Speciality</option>
+            <option value="General physician">General physician</option>
+            <option value="Gynecologist">Gynecologist</option>
+            <option value="Dermatologist">Dermatologist</option>
+            <option value="Pediatricians">Pediatricians</option>
+            <option value="Neurologist">Neurologist</option>
+            <option value="Gastroenterologist">Gastroenterologist</option>
+          </select>
+        </div>
       </div>
+
 
       <h1 className="text-4xl font-bold text-blue-800 mb-10 text-center">Doctor Directory</h1>
 
@@ -201,23 +209,24 @@ const DoctorsList = () => {
                 <div className="flex justify-end space-x-2 mt-3">
                   <button
                     onClick={() => handleViewClick(doctor)}
-                    className="p-2 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg text-sm"
+                    className="p-2 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg text-sm flex items-center gap-1"
                   >
-                    View
+                    <Eye size={16} /> View
                   </button>
                   <button
                     onClick={() => handleEditClick(doctor)}
-                    className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-sm"
+                    className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-sm flex items-center gap-1"
                   >
-                    Edit
+                    <Pencil size={16} /> Edit
                   </button>
                   <button
                     onClick={() => handleDeleteClick(doctor._id)}
-                    className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-sm"
+                    className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-sm flex items-center gap-1"
                   >
-                    Delete
+                    <Trash2 size={16} /> Delete
                   </button>
                 </div>
+
               </div>
             </div>
           ))

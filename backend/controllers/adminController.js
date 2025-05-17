@@ -326,5 +326,23 @@ const allPatients = async (req, res) => {
   }
 };
 
+const deletePatient = async (req, res) => {
+  try {
+    const patientId = req.params.id;
+    const deleted = await userModel.findByIdAndDelete(patientId);
 
-export { addDoctor, loginAdmin, allDoctors, updateDoctor, deleteDoctor, appointmentsAdmin, appointmentCancel,adminDashboard ,addPatient };
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Patient not found" });
+    }
+
+    // Also delete any appointments associated with this patient
+    await appointmentModel.deleteMany({ userId: patientId });
+
+    res.json({ success: true, message: "Patient deleted successfully" });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export { addDoctor, loginAdmin, allDoctors, updateDoctor, deleteDoctor, appointmentsAdmin, appointmentCancel,adminDashboard ,addPatient,allPatients,deletePatient };
