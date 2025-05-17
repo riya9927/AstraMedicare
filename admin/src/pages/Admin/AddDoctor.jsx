@@ -1,38 +1,3 @@
-// import React from 'react'
-// import { assets } from '../../assets/assets'
-
-// const AddDoctor = () => {
-//   return (
-//     <form>
-//       <p>Add Doctor</p>
-//       <div>
-//         <div>
-//           <label htmlFor='doc-img'>
-//             <img src={assets.upload_area} alt='' />
-//           </label>
-//           <input type='file' id='doc-img' hidden />
-//           <p>Upload Doctor <br /> picture</p>
-//         </div>
-//         <div>
-//           <div>
-//             <div>
-//               <p>Doctor Name</p>
-//               <input type='text' placeholder='Name' required />
-//             </div>
-//             <div>
-//               <p>Doctor Email</p>
-//               <input type='text' placeholder='Name' required />
-//             </div>
-
-//           </div>
-//         </div>
-//       </div>
-//     </form>
-//   )
-// }
-
-// export default AddDoctor
-
 import React, { useState } from 'react';
 import { assets } from '../../assets/assets';
 import { useContext } from 'react';
@@ -318,3 +283,38 @@ const AddDoctor = () => {
 };
 
 export default AddDoctor;
+
+// import React from 'react'
+// import { assets } from '../../assets/assets'
+
+// const AddDoctor = () => {
+//   return (
+//     <form>
+//       <p>Add Doctor</p>
+//       <div>
+//         <div>
+//           <label htmlFor='doc-img'>
+//             <img src={assets.upload_area} alt='' />
+//           </label>
+//           <input type='file' id='doc-img' hidden />
+//           <p>Upload Doctor <br /> picture</p>
+//         </div>
+//         <div>
+//           <div>
+//             <div>
+//               <p>Doctor Name</p>
+//               <input type='text' placeholder='Name' required />
+//             </div>
+//             <div>
+//               <p>Doctor Email</p>
+//               <input type='text' placeholder='Name' required />
+//             </div>
+
+//           </div>
+//         </div>
+//       </div>
+//     </form>
+//   )
+// }
+
+// export default AddDoctor

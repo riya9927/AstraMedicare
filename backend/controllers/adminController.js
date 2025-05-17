@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from '../models/appointmentModel.js'
+import userModel from '../models/userModel.js'
 import jwt from "jsonwebtoken";
 
 // API for adding doctor
@@ -180,23 +181,150 @@ const appointmentsAdmin = async (req, res) => {
 
 // API to get appointments cancellation
 const appointmentCancel = async (req, res) => {
-    try {
-        const {  appointmentId } = req.body
-        const appointmentData = await appointmentModel.findById(appointmentId)
-        
-        await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
-        // releasing doctor slot 
-        const { docId, slotDate, slotTime } = appointmentData
-        const doctorData = await doctorModel.findById(docId)
-        let slots_booked = doctorData.slots_booked
-        slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime)
-        await doctorModel.findByIdAndUpdate(docId, { slots_booked })
-        res.json({ success: true, message: 'Appointment Cancelled' })
-    } catch (error) {
-        console.log(error)
-        res.json({ success: false, message: error.message })
-    }
+  try {
+    const { appointmentId } = req.body
+    const appointmentData = await appointmentModel.findById(appointmentId)
+
+    await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
+    // releasing doctor slot 
+    const { docId, slotDate, slotTime } = appointmentData
+    const doctorData = await doctorModel.findById(docId)
+    let slots_booked = doctorData.slots_booked
+    slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime)
+    await doctorModel.findByIdAndUpdate(docId, { slots_booked })
+    res.json({ success: true, message: 'Appointment Cancelled' })
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: error.message })
+  }
 }
 
+// API to get dashboard data for admin panel 
+const adminDashboard = async (req, res) => {
+  try {
+    const doctors = await doctorModel.find({})
+    const users = await userModel.find({})
+    const appointments = await appointmentModel.find({})
+    const dashData = {
+      doctors: doctors.length,
+      appointments: appointments.length,
+      patients: users.length,
+      latestAppointments: appointments.reverse().slice(0, 5)
+    }
+    res.json({success: true, dashData})
+  } catch (error) {
+    console.log(error)
+    res.json({ success: false, message: error.message })
+  }
+}
 
-export { addDoctor, loginAdmin, allDoctors, updateDoctor, deleteDoctor,appointmentsAdmin,appointmentCancel };
+// API for adding patient
+const addPatient = async (req, res) => {
+  try {
+    const { 
+      name, 
+      email, 
+      password, 
+      phone, 
+      gender, 
+      dob, 
+      bloodGroup, 
+      address, 
+      emergencyContact 
+    } = req.body;
+
+    // Check required fields
+    if (!name || !email || !password) {
+      return res.json({ success: false, message: "Missing required details" });
+    }
+
+    // Validate email format
+    if (!validator.isEmail(email)) {
+      return res.json({ success: false, message: "Please enter a valid email." });
+    }
+
+    // Validate password strength
+    if (password.length < 8) {
+      return res.json({ success: false, message: "Please enter a strong password (at least 8 characters)" });
+    }
+
+    // Check if patient with email already exists
+    const existingPatient = await userModel.findOne({ email });
+    if (existingPatient) {
+      return res.json({ success: false, message: "A patient with this email already exists" });
+    }
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Process image if provided
+    let imageUrl = "";
+    if (req.file) {
+      const imageUpload = await cloudinary.uploader.upload(req.file.path, { resource_type: "image" });
+      imageUrl = imageUpload.secure_url;
+    }
+
+    // Create patient data object
+    const patientData = {
+      name,
+      email,
+      password: hashedPassword,
+      image: imageUrl
+    };
+
+    // Add optional fields if provided
+    if (phone) patientData.phone = phone;
+    if (gender) patientData.gender = gender;
+    if (dob) patientData.dob = new Date(dob);
+    if (bloodGroup) patientData.bloodGroup = bloodGroup;
+    
+    // Parse and add address if provided
+    if (address) {
+      try {
+        patientData.address = JSON.parse(address);
+      } catch (error) {
+        console.log("Error parsing address:", error);
+        return res.json({ success: false, message: "Invalid address format" });
+      }
+    }
+    
+    // Parse and add emergency contact if provided
+    if (emergencyContact) {
+      try {
+        patientData.emergencyContact = JSON.parse(emergencyContact);
+      } catch (error) {
+        console.log("Error parsing emergency contact:", error);
+        return res.json({ success: false, message: "Invalid emergency contact format" });
+      }
+    }
+
+    // Create and save new patient
+    const newPatient = new userModel(patientData);
+    await newPatient.save();
+
+    res.json({ 
+      success: true, 
+      message: "Patient Added Successfully", 
+      patientId: newPatient.patientId 
+    });
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// API to get all patients list
+const allPatients = async (req, res) => {
+  try {
+    const patients = await userModel.find({}).select('-password');
+    res.json({ success: true, patients });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+export { addDoctor, loginAdmin, allDoctors, updateDoctor, deleteDoctor, appointmentsAdmin, appointmentCancel,adminDashboard ,addPatient };
