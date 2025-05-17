@@ -1,7 +1,7 @@
 # AstraMedicare 🏥💊
 
 ## Full Stack Doctor Appointment Booking System
-
+---
 AstraMedicare is a full-stack Doctor Appointment Booking platform developed using the MERN stack (MongoDB, Express.js, React.js, Node.js). It is designed to streamline healthcare services by offering a centralized system for managing doctor appointments, patient records, and administrative controls. The platform features secure multi-role authentication for Patients, Doctors, and Admins, enabling personalized access to features such as appointment scheduling, and real-time updates. AstraMedicare is an ideal solution for hospitals, clinics, and individual medical practitioners seeking to digitize and simplify their operations.
 ---
 
