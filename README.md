@@ -1,10 +1,11 @@
-# AstraMedicare 
+# AstraMedicare 🏥💊
 
-AstraMedicare is a modern and responsive healthcare website designed to simplify the process of connecting patients with healthcare services. It allows users to book doctor appointments, access electronic health records, and much more — all from the comfort of their home.
+## Full Stack Doctor Appointment Booking System
 
+AstraMedicare is a complete full-stack Doctor Appointment Booking platform built using the MERN stack (MongoDB, Express.js, React.js, Node.js). This project supports multi-role authentication for Patients, Doctors, and Admins, with secure login, appointment management, electronic health records (EHR), and online payments. It's ideal for hospitals, clinics, or individual doctors.
 ---
 
-## 📌 Key Features
+## 🚀 Features
 
 - 🧑‍⚕️ Book online doctor consultations
 - 📅 Manage appointments (book, reschedule, cancel)
@@ -17,17 +18,30 @@ AstraMedicare is a modern and responsive healthcare website designed to simplify
 ## 🛠️ Tech Stack
 
 ### Frontend
-- HTML5, CSS3, JavaScript
 - React.js
-- Tailwind CSS
+- Tailwind CSS 
+- Axios
+- React Router DOM
 
 ### Backend
-- Node.js with Express.js 
-- MongoDB
-
-### Others
+- Node.js
+- Express.js
+- MongoDB (Mongoose)
 - JWT for authentication
-- RESTful API integration
-- Git & GitHub for version control
 
+---
+
+## 📦 Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/AstraMedicare.git
+cd AstraMedicare
+
+
+## 🧪 Testing
+
+* API tested with Postman
+* UI tested across modern browsers
 
