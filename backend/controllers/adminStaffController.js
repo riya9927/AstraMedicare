@@ -1,0 +1,179 @@
+import validator from "validator";
+import bcrypt from "bcrypt";
+import { v2 as cloudinary } from "cloudinary";
+import jwt from "jsonwebtoken";
+import administrativeStaffModel from "../models/administrativeStaffModel.js";
+
+// API for adding administrative staff
+const addAdministrativeStaff = async (req, res) => {
+    try {
+        const {
+            
+            fullName,
+            gender,
+            dateOfBirth,
+            contactNumber,
+            addressLine1,
+            addressLine2,
+            role,
+            email,
+            shiftTimings,
+            dateOfJoining,
+            salaryDetails
+        } = req.body;
+
+        const imageFile = req.file;
+
+        if ( !fullName || !gender || !dateOfBirth || !contactNumber ||
+            !addressLine1 || !role || !email || !shiftTimings ||
+            !dateOfJoining || !salaryDetails) {
+            return res.json({ success: false, message: "Missing Required Details" });
+        }
+
+        const existingStaff = await administrativeStaffModel.findOne({ email });
+        if (existingStaff) {
+            return res.json({ success: false, message: "Staff ID already exists" });
+        }
+
+        if (!validator.isMobilePhone(contactNumber)) {
+            return res.json({ success: false, message: "Please enter a valid contact number" });
+        }
+        if (!validator.isEmail(email)) {
+            return res.json({ success: false, message: "Please enter a valid email." });
+        }
+
+        let imageUrl = "";
+        if (imageFile) {
+            const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
+            imageUrl = imageUpload.secure_url;
+        } else {
+            return res.json({ success: false, message: "Staff photo is required" });
+        }
+
+        const staffData = {
+            photo: imageUrl,
+            // staffID,
+            fullName,
+            gender,
+            dateOfBirth: new Date(dateOfBirth),
+            contactNumber,
+            addressLine1,
+            addressLine2,
+            role,
+            email,
+            shiftTimings,
+            dateOfJoining: new Date(dateOfJoining),
+            salaryDetails: Number(salaryDetails)
+        };
+
+        const newStaff = new administrativeStaffModel(staffData);
+        await newStaff.save();
+
+        res.json({ success: true, message: "Administrative Staff Added Successfully" });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// API to get all administrative staff
+const getAllAdministrativeStaff = async (req, res) => {
+    try {
+        const staffList = await administrativeStaffModel.find({});
+        res.json({ success: true, staffList });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// API to update administrative staff details
+const updateAdministrativeStaff = async (req, res) => {
+    try {
+        const staffId = req.params.id;
+        const existingStaff = await administrativeStaffModel.findById(staffId);
+
+        if (!existingStaff) {
+            return res.status(404).json({ success: false, message: "Staff member not found" });
+        }
+
+        const {
+            staffID,
+            fullName,
+            gender,
+            dateOfBirth,
+            contactNumber,
+            addressLine1,
+            addressLine2,
+            role,
+            email,
+            shiftTimings,
+            dateOfJoining,
+            salaryDetails
+        } = req.body;
+
+        if (staffID && staffID !== existingStaff.staffID) {
+            const duplicateID = await administrativeStaffModel.findOne({ staffID });
+            if (duplicateID) {
+                return res.json({ success: false, message: "Staff ID already exists" });
+            }
+        }
+
+        if (email && !validator.isEmail(email)) {
+            return res.json({ success: false, message: "Invalid email format" });
+        }
+
+        if (contactNumber && !validator.isMobilePhone(contactNumber)) {
+            return res.json({ success: false, message: "Please enter a valid contact number" });
+        }
+
+        let imageUrl = existingStaff.photo;
+        if (req.file) {
+            const imageUpload = await cloudinary.uploader.upload(req.file.path, { resource_type: "image" });
+            imageUrl = imageUpload.secure_url;
+        }
+
+        const updatedData = {
+            photo: imageUrl
+        };
+
+        if (staffID) updatedData.staffID = staffID;
+        if (fullName) updatedData.fullName = fullName;
+        if (gender) updatedData.gender = gender;
+        if (dateOfBirth) updatedData.dateOfBirth = new Date(dateOfBirth);
+        if (contactNumber) updatedData.contactNumber = contactNumber;
+        if (addressLine1) updatedData.addressLine1 = addressLine1;
+        if (addressLine2 !== undefined) updatedData.addressLine2 = addressLine2;
+        if (role) updatedData.role = role;
+        if (email) updatedData.email = email;
+        if (shiftTimings) updatedData.shiftTimings = shiftTimings;
+        if (dateOfJoining) updatedData.dateOfJoining = new Date(dateOfJoining);
+        if (salaryDetails) updatedData.salaryDetails = Number(salaryDetails);
+
+        await administrativeStaffModel.findByIdAndUpdate(staffId, updatedData, { new: true });
+
+        res.json({ success: true, message: "Staff member updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// API to delete administrative staff
+const deleteAdministrativeStaff = async (req, res) => {
+    try {
+        const staffId = req.params.id;
+        const deleted = await administrativeStaffModel.findByIdAndDelete(staffId);
+
+        if (!deleted) {
+            return res.status(404).json({ success: false, message: "Staff member not found" });
+        }
+
+        res.json({ success: true, message: "Staff member deleted successfully" });
+    } catch (error) {
+        console.error("Delete error:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export { addAdministrativeStaff, getAllAdministrativeStaff, updateAdministrativeStaff, deleteAdministrativeStaff };

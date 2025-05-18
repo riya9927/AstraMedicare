@@ -12,6 +12,7 @@ const AdminContextProvider = (props) => {
     const [patients, setPatients] = useState([])
     const [appointments, setAppointments] = useState([])
     const [dashData, setDashData] = useState(false)
+    const [administrativeStaff, setAdministrativeStaff] = useState([]);
     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
     const getAllDoctors = async () => {
@@ -125,8 +126,6 @@ const AdminContextProvider = (props) => {
             const { data } = await axios.post(backendUrl + '/api/admin/all-patient', {}, { headers: { aToken } })
             if (data.success) {
                 setPatients(data.patients)
-
-
             } else {
                 toast.error(data.message)
             }
@@ -177,6 +176,68 @@ const AdminContextProvider = (props) => {
         }
     };
 
+    const getAllAdministrativeStaff = async () => {
+        try {
+            // console.log("Fetching administrative staff with token:", aToken);
+            const { data } = await axios.post(backendUrl + '/api/admin/administrative', {}, { headers: { aToken } })
+
+            // console.log(data);
+            if (data.success) {
+                // Change this line to use data.staffList instead of data.administrativeStaff
+                setAdministrativeStaff(data.staffList);
+                // return data.staff;
+            } else {
+                toast.error(data.message)
+                // return [];
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+            // return [];
+        }
+    };
+
+    const deleteAdministrativeStaff = async (id) => {
+        try {
+            const { data } = await axios.delete(`${backendUrl}/api/admin/administrative/${id}`, {
+                headers: { aToken }
+            });
+
+            if (data.success) {
+                toast.success(data.message || "Administrative staff deleted successfully");
+                // Update the state to remove the deleted staff member
+                setAdministrativeStaff(prev => prev.filter(staff => staff._id !== id));
+                return { success: true };
+            } else {
+                toast.error(data.message || "Failed to delete administrative staff");
+                return { success: false };
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+            return { success: false };
+        }
+    };
+
+    const updateAdministrativeStaff = async (staffId, formDataObj) => {
+        try {
+            const { data } = await axios.put(
+                `${backendUrl}/api/admin/administrative/${staffId}`,
+                formDataObj,
+                { headers: { aToken } }
+            );
+
+            if (data.success) {
+                toast.success(data.message || "Administrative staff updated successfully");
+                await getAllAdministrativeStaff(); // Refresh the staff list
+                return { success: true };
+            } else {
+                toast.error(data.message || "Failed to update administrative staff");
+                return { success: false };
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+            return { success: false };
+        }
+    };
 
     const value = {
         aToken, setAToken,
@@ -188,7 +249,11 @@ const AdminContextProvider = (props) => {
         cancelAppointment,
         dashData, getDashData,
         patients, getAllPatients,
-        deletePatient, updatePatient
+        deletePatient, updatePatient,
+        administrativeStaff,
+        getAllAdministrativeStaff,
+        deleteAdministrativeStaff,
+        updateAdministrativeStaff,
     }
 
     return (

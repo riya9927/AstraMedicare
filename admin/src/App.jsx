@@ -16,6 +16,9 @@ import Billing from './pages/Admin/Billing'
 import AddPatient from './pages/Admin/AddPatient'
 import UpdateDoctor from './pages/Admin/UpdateDoctor';
 import { Route, Routes } from 'react-router-dom';
+import AdministrativeStaff from './pages/Admin/AdministrativeStaff';
+import AddAdministrativeStaff from './pages/Admin/AddAdministrativeStaff';
+
 
 const App = () => {
   const { aToken } = useContext(AdminContext)
@@ -36,6 +39,10 @@ const App = () => {
           <Route path='/billing' element={<Billing />} />
           <Route path='/add-patient' element={<AddPatient />} />
           <Route path='/update-doctor' element={<UpdateDoctor />} />
+          <Route path='/staff-management/administrative' element={<AdministrativeStaff />}/>
+          <Route path='/staff-management/add-administrative' element={<AddAdministrativeStaff />} />
+
+          
 
         </Routes>
       </div>

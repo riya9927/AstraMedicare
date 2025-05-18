@@ -396,4 +396,6 @@ const updatePatient = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
 export { addDoctor, loginAdmin, allDoctors, updateDoctor, deleteDoctor, appointmentsAdmin, appointmentCancel,adminDashboard ,addPatient,allPatients,deletePatient,updatePatient  };
