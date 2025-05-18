@@ -36,7 +36,7 @@ const administrativeStaffSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['Receptionist', 'Billing Clerk', 'HR Assistant'],
+        enum: ['Admin','Receptionist', 'Billing Clerk', 'HR Assistant'],
         required: true,
     },
     email: {

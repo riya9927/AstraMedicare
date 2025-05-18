@@ -194,6 +194,7 @@ const AddAdministrativeStaff = () => {
               className="w-full p-3 rounded-md bg-gray-100 text-gray-800 border border-gray-300"
             >
               <option value="">Select Role</option>
+              <option value="Admin">Admin</option>
               <option value="Receptionist">Receptionist</option>
               <option value="Billing Clerk">Billing Clerk</option>
               <option value="HR Assistant">HR Assistant</option>

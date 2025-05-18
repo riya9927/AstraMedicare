@@ -1,8 +1,7 @@
-
 import React, { useContext, useEffect, useState } from 'react';
 import { AdminContext } from '../../context/AdminContext';
 import UpdateAdministrativeStaff from './UpdateAdministrativeStaff';
-import { Eye, Trash2, Search, Edit } from 'lucide-react';
+import { Eye, Trash2, Search, Filter, Edit } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AdministrativeStaff = () => {
@@ -15,7 +14,11 @@ const AdministrativeStaff = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [viewStaff, setViewStaff] = useState(null);
-    const [deleteConfirmation, setDeleteConfirmation] = useState(null);
+    const [filterOptions, setFilterOptions] = useState({
+        gender: '',
+        role: ''
+    });
+    const [showFilterMenu, setShowFilterMenu] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [editAdministrativeStaff, setEditAdministrativeStaff] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -32,11 +35,10 @@ const AdministrativeStaff = () => {
         fetchAdministrativeStaff();
     }, [aToken, getAllAdministrativeStaff]);
 
-    // Debug log to check if data is being received
+    // Debug log to check filtered results
     useEffect(() => {
-        // console.log(administrativeStaff);
-
-    }, [administrativeStaff]);
+        console.log("Current filter options:", filterOptions);
+    }, [filterOptions]);
 
     const handleView = (staff) => setViewStaff(staff);
     const handleCloseView = () => setViewStaff(null);
@@ -53,16 +55,60 @@ const AdministrativeStaff = () => {
         }
     };
 
-    const handleEdit = (staffId) => {
-        navigate(`/staff-management/edit-administrative/${staffId}`);
+    const handleFilterChange = (e) => {
+        setFilterOptions({
+            ...filterOptions,
+            [e.target.name]: e.target.value
+        });
     };
 
-    const filteredStaff = Array.isArray(administrativeStaff)
-        ? administrativeStaff.filter((staff) =>
-            staff?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            staff?.staffID?.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        : [];
+    const clearFilters = () => {
+        setFilterOptions({
+            gender: '',
+            role: ''
+        });
+    };
+
+    // Apply filters to staff data
+    const getFilteredStaff = () => {
+        if (!Array.isArray(administrativeStaff)) {
+            return [];
+        }
+
+        return administrativeStaff.filter(staff => {
+            // Check if staff record exists and has the required properties
+            if (!staff) return false;
+            
+            // Gender filter (case-insensitive)
+            if (filterOptions.gender && 
+                staff.gender && 
+                staff.gender.toLowerCase() !== filterOptions.gender.toLowerCase()) {
+                return false;
+            }
+            
+            // Role filter (case-insensitive)
+            if (filterOptions.role && 
+                staff.role && 
+                staff.role.toLowerCase() !== filterOptions.role.toLowerCase()) {
+                return false;
+            }
+            
+            // Search term filter (case-insensitive)
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                const nameMatch = staff.fullName && staff.fullName.toLowerCase().includes(term);
+                const idMatch = staff.staffID && staff.staffID.toLowerCase().includes(term);
+                
+                if (!nameMatch && !idMatch) {
+                    return false;
+                }
+            }
+            
+            return true;
+        });
+    };
+
+    const filteredStaff = getFilteredStaff();
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10 text-gray-800">
@@ -79,13 +125,76 @@ const AdministrativeStaff = () => {
                     className="w-full pl-10 pr-4 py-3 rounded-md bg-gray-100 border border-gray-300 focus:outline-none"
                 />
             </div>
-            <div className="flex justify-end mb-4">
+            
+            {/* Filter Menu Button */}
+            <div className="flex justify-end mb-4 relative">
+                <button
+                    onClick={() => setShowFilterMenu(!showFilterMenu)}
+                    className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-4 py-2 rounded-md shadow-sm transition duration-200 flex items-center gap-2 mr-2"
+                >
+                    <Filter size={18} />
+                    Filter {(filterOptions.gender || filterOptions.role) && '(Active)'}
+                </button>
+                
+                {/* Add Staff Button */}
                 <button
                     onClick={() => navigate('/staff-management/add-administrative')}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-md shadow transition duration-200"
                 >
                     + Add Staff
                 </button>
+                
+                {/* Filter Menu Dropdown */}
+                {showFilterMenu && (
+                    <div className="absolute top-12 right-0 z-10 bg-white shadow-lg rounded-lg border border-gray-200 p-4 w-64">
+                        <h4 className="font-medium text-gray-700 mb-3">Filter Options</h4>
+                        
+                        <div className="mb-3">
+                            <label className="block text-sm font-medium text-gray-600 mb-1">Gender</label>
+                            <select
+                                name="gender"
+                                value={filterOptions.gender}
+                                onChange={handleFilterChange}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                            >
+                                <option value="">All</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        
+                        <div className="mb-3">
+                            <label className="block text-sm font-medium text-gray-600 mb-1">Role</label>
+                            <select
+                                name="role"
+                                value={filterOptions.role}
+                                onChange={handleFilterChange}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                            >
+                                <option value="">All Roles</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Receptionist">Receptionist</option>
+                                <option value="HR Assistant">HR Assistant</option>
+                                <option value="Billing Clerk">Billing Clerk</option>
+                            </select>
+                        </div>
+                        
+                        <div className="flex justify-between">
+                            <button
+                                onClick={clearFilters}
+                                className="text-sm text-blue-600 hover:text-blue-800"
+                            >
+                                Clear Filters
+                            </button>
+                            <button
+                                onClick={() => setShowFilterMenu(false)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm"
+                            >
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {editAdministrativeStaff && (
@@ -107,7 +216,9 @@ const AdministrativeStaff = () => {
                 <div className="grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
                     {filteredStaff.length === 0 ? (
                         <p className="col-span-full text-center text-gray-500 py-10">
-                            {searchTerm ? "No staff found matching your search." : "No administrative staff found. Add staff using the button above."}
+                            {searchTerm || filterOptions.gender || filterOptions.role ? 
+                                "No staff found matching your search/filter criteria." : 
+                                "No administrative staff found. Add staff using the button above."}
                         </p>
                     ) : (
                         filteredStaff.map((staff, index) => (
