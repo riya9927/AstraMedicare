@@ -4,6 +4,8 @@ import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from '../models/appointmentModel.js'
 import userModel from '../models/userModel.js'
+import administrativeStaffModel from "../models/administrativeStaffModel.js";
+import nurseModel from "../models/nurseModel.js";
 import jwt from "jsonwebtoken";
 
 // API for adding doctor
@@ -199,10 +201,14 @@ const adminDashboard = async (req, res) => {
     const doctors = await doctorModel.find({})
     const users = await userModel.find({})
     const appointments = await appointmentModel.find({})
+    const administaff= await administrativeStaffModel.find({})
+    const nurse=await nurseModel.find({})
     const dashData = {
       doctors: doctors.length,
       appointments: appointments.length,
       patients: users.length,
+      administaff:administaff.length,
+      nurse: nurse.length,
       latestAppointments: appointments.reverse().slice(0, 5)
     }
     res.json({success: true, dashData})

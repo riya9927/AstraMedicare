@@ -55,7 +55,35 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+         {/* Administrative Staff Card */}
+        <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
+          <div className="flex items-center">
+            <div className="p-3 bg-purple-100 rounded-full mr-4">
+              <img src={assets.patients_icon} alt="Patients" className="w-10 h-10" />
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-gray-800">{dashData.administaff}</p>
+              <p className="text-gray-500 font-medium">Administrative Staff</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Nurse Card */}
+        <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg">
+          <div className="flex items-center">
+            <div className="p-3 bg-purple-100 rounded-full mr-4">
+              <img src={assets.patients_icon} alt="Patients" className="w-10 h-10" />
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-gray-800">{dashData.nurse}</p>
+              <p className="text-gray-500 font-medium">Nurse</p>
+            </div>
+          </div>
+        </div>
       </div>
+
+      
 
       {/* Latest Bookings Section */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">

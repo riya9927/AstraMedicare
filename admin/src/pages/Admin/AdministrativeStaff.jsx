@@ -78,32 +78,32 @@ const AdministrativeStaff = () => {
         return administrativeStaff.filter(staff => {
             // Check if staff record exists and has the required properties
             if (!staff) return false;
-            
+
             // Gender filter (case-insensitive)
-            if (filterOptions.gender && 
-                staff.gender && 
+            if (filterOptions.gender &&
+                staff.gender &&
                 staff.gender.toLowerCase() !== filterOptions.gender.toLowerCase()) {
                 return false;
             }
-            
+
             // Role filter (case-insensitive)
-            if (filterOptions.role && 
-                staff.role && 
+            if (filterOptions.role &&
+                staff.role &&
                 staff.role.toLowerCase() !== filterOptions.role.toLowerCase()) {
                 return false;
             }
-            
+
             // Search term filter (case-insensitive)
             if (searchTerm) {
                 const term = searchTerm.toLowerCase();
                 const nameMatch = staff.fullName && staff.fullName.toLowerCase().includes(term);
                 const idMatch = staff.staffID && staff.staffID.toLowerCase().includes(term);
-                
+
                 if (!nameMatch && !idMatch) {
                     return false;
                 }
             }
-            
+
             return true;
         });
     };
@@ -112,89 +112,90 @@ const AdministrativeStaff = () => {
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10 text-gray-800">
-            
-            <h2 className="text-4xl font-bold text-blue-800 mb-10 text-center">Administrative Staff</h2>
 
-            <div className="mb-6 relative w-full md:w-1/2 mx-auto">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                <input
-                    type="text"
-                    placeholder="Search by name or staff ID..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-md bg-gray-100 border border-gray-300 focus:outline-none"
-                />
-            </div>
-            
-            {/* Filter Menu Button */}
-            <div className="flex justify-end mb-4 relative">
-                <button
-                    onClick={() => setShowFilterMenu(!showFilterMenu)}
-                    className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-4 py-2 rounded-md shadow-sm transition duration-200 flex items-center gap-2 mr-2"
-                >
-                    <Filter size={18} />
-                    Filter {(filterOptions.gender || filterOptions.role) && '(Active)'}
-                </button>
-                
-                {/* Add Staff Button */}
-                <button
-                    onClick={() => navigate('/staff-management/add-administrative')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-md shadow transition duration-200"
-                >
-                    + Add Staff
-                </button>
-                
-                {/* Filter Menu Dropdown */}
-                {showFilterMenu && (
-                    <div className="absolute top-12 right-0 z-10 bg-white shadow-lg rounded-lg border border-gray-200 p-4 w-64">
-                        <h4 className="font-medium text-gray-700 mb-3">Filter Options</h4>
-                        
-                        <div className="mb-3">
-                            <label className="block text-sm font-medium text-gray-600 mb-1">Gender</label>
-                            <select
-                                name="gender"
-                                value={filterOptions.gender}
-                                onChange={handleFilterChange}
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                            >
-                                <option value="">All</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
+            <h2 className="text-4xl font-bold text-blue-800 mb-10 text-center">Administrative Staff</h2>
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div className="relative w-full md:w-1/2">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                    <input
+                        type="text"
+                        placeholder="Search by name or staff ID..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 p-3 rounded-md bg-gray-100 text-gray-800 border border-gray-300"
+                    />
+                </div>
+
+                {/* Filter Menu Button */}
+                <div className="flex justify-end mb-4 relative">
+                    <button
+                        onClick={() => setShowFilterMenu(!showFilterMenu)}
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-4 py-2 rounded-md shadow-sm transition duration-200 flex items-center gap-2 mr-2"
+                    >
+                        <Filter size={18} />
+                        Filter {(filterOptions.gender || filterOptions.role) && '(Active)'}
+                    </button>
+
+                    {/* Add Staff Button */}
+                    <button
+                        onClick={() => navigate('/staff-management/add-administrative')}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-md shadow transition duration-200"
+                    >
+                        + Add Staff
+                    </button>
+
+                    {/* Filter Menu Dropdown */}
+                    {showFilterMenu && (
+                        <div className="absolute top-12 right-0 z-10 bg-white shadow-lg rounded-lg border border-gray-200 p-4 w-64">
+                            <h4 className="font-medium text-gray-700 mb-3">Filter Options</h4>
+
+                            <div className="mb-3">
+                                <label className="block text-sm font-medium text-gray-600 mb-1">Gender</label>
+                                <select
+                                    name="gender"
+                                    value={filterOptions.gender}
+                                    onChange={handleFilterChange}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                >
+                                    <option value="">All</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="block text-sm font-medium text-gray-600 mb-1">Role</label>
+                                <select
+                                    name="role"
+                                    value={filterOptions.role}
+                                    onChange={handleFilterChange}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                >
+                                    <option value="">All Roles</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="Receptionist">Receptionist</option>
+                                    <option value="HR Assistant">HR Assistant</option>
+                                    <option value="Billing Clerk">Billing Clerk</option>
+                                </select>
+                            </div>
+
+                            <div className="flex justify-between">
+                                <button
+                                    onClick={clearFilters}
+                                    className="text-sm text-blue-600 hover:text-blue-800"
+                                >
+                                    Clear Filters
+                                </button>
+                                <button
+                                    onClick={() => setShowFilterMenu(false)}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm"
+                                >
+                                    Apply
+                                </button>
+                            </div>
                         </div>
-                        
-                        <div className="mb-3">
-                            <label className="block text-sm font-medium text-gray-600 mb-1">Role</label>
-                            <select
-                                name="role"
-                                value={filterOptions.role}
-                                onChange={handleFilterChange}
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                            >
-                                <option value="">All Roles</option>
-                                <option value="Admin">Admin</option>
-                                <option value="Receptionist">Receptionist</option>
-                                <option value="HR Assistant">HR Assistant</option>
-                                <option value="Billing Clerk">Billing Clerk</option>
-                            </select>
-                        </div>
-                        
-                        <div className="flex justify-between">
-                            <button
-                                onClick={clearFilters}
-                                className="text-sm text-blue-600 hover:text-blue-800"
-                            >
-                                Clear Filters
-                            </button>
-                            <button
-                                onClick={() => setShowFilterMenu(false)}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm"
-                            >
-                                Apply
-                            </button>
-                        </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
 
             {editAdministrativeStaff && (
@@ -216,13 +217,13 @@ const AdministrativeStaff = () => {
                 <div className="grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
                     {filteredStaff.length === 0 ? (
                         <p className="col-span-full text-center text-gray-500 py-10">
-                            {searchTerm || filterOptions.gender || filterOptions.role ? 
-                                "No staff found matching your search/filter criteria." : 
+                            {searchTerm || filterOptions.gender || filterOptions.role ?
+                                "No staff found matching your search/filter criteria." :
                                 "No administrative staff found. Add staff using the button above."}
                         </p>
                     ) : (
                         filteredStaff.map((staff, index) => (
-                            <div key={staff?._id || index} 
+                            <div key={staff?._id || index}
                                 className="bg-white border border-gray-200 shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col h-full">
                                 <div className="p-4 flex flex-col items-center">
                                     <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden mb-3">
@@ -238,28 +239,28 @@ const AdministrativeStaff = () => {
                                     <p className="text-xs sm:text-sm text-gray-600 capitalize">Gender: {staff?.gender || 'N/A'}</p>
                                     <p className="text-xs sm:text-sm text-blue-600 font-medium">{staff?.role || 'Staff'}</p>
                                 </div>
-                                
+
                                 <div className="mt-auto p-3 pt-4 border-t border-gray-100 bg-gray-50">
                                     <div className="flex flex-wrap justify-center gap-2">
                                         <button
                                             onClick={() => handleView(staff)}
                                             className="px-3 py-1.5 text-xs sm:text-sm bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-1 transition-colors"
                                         >
-                                            <Eye size={16} className="hidden xs:inline" /> 
+                                            <Eye size={16} className="hidden xs:inline" />
                                             <span>View</span>
                                         </button>
                                         <button
                                             onClick={() => setEditAdministrativeStaff(staff)}
                                             className="px-3 py-1.5 text-xs sm:text-sm bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg flex items-center gap-1 transition-colors"
                                         >
-                                            <Edit size={16} className="hidden xs:inline" /> 
+                                            <Edit size={16} className="hidden xs:inline" />
                                             <span>Edit</span>
                                         </button>
                                         <button
                                             onClick={() => handleDelete(staff?._id)}
                                             className="px-3 py-1.5 text-xs sm:text-sm bg-red-100 hover:bg-red-200 text-red-600 rounded-lg flex items-center gap-1 transition-colors"
                                         >
-                                            <Trash2 size={16} className="hidden xs:inline" /> 
+                                            <Trash2 size={16} className="hidden xs:inline" />
                                             <span>Delete</span>
                                         </button>
                                     </div>
