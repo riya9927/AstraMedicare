@@ -18,6 +18,8 @@ import UpdateDoctor from './pages/Admin/UpdateDoctor';
 import { Route, Routes } from 'react-router-dom';
 import AdministrativeStaff from './pages/Admin/AdministrativeStaff';
 import AddAdministrativeStaff from './pages/Admin/AddAdministrativeStaff';
+import Nurse from './pages/Admin/Nurse';
+import AddNurse from './pages/Admin/AddNurse';
 
 
 const App = () => {
@@ -41,8 +43,8 @@ const App = () => {
           <Route path='/update-doctor' element={<UpdateDoctor />} />
           <Route path='/staff-management/administrative' element={<AdministrativeStaff />}/>
           <Route path='/staff-management/add-administrative' element={<AddAdministrativeStaff />} />
-
-          
+          <Route path='/staff-management/nurse' element={<Nurse />}/>
+          <Route path='/staff-management/add-nurse' element={<AddNurse />} />
 
         </Routes>
       </div>

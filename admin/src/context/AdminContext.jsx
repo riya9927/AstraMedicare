@@ -13,6 +13,7 @@ const AdminContextProvider = (props) => {
     const [appointments, setAppointments] = useState([])
     const [dashData, setDashData] = useState(false)
     const [administrativeStaff, setAdministrativeStaff] = useState([]);
+    const [nurses, setNurses] = useState([]);
     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
     const getAllDoctors = async () => {
@@ -217,27 +218,68 @@ const AdminContextProvider = (props) => {
         }
     };
 
-    const updateAdministrativeStaff = async (staffId, formDataObj) => {
+     const getAllNurses = async () => {
         try {
-            const { data } = await axios.put(
-                `${backendUrl}/api/admin/administrative/${staffId}`,
-                formDataObj,
-                { headers: { aToken } }
-            );
+            const { data } = await axios.post(backendUrl + '/api/admin/nurses', {}, { headers: { aToken } });
+            if (data.success) {
+                setNurses(data.nurseList);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
+    };
+
+    const deleteNurse = async (id) => {
+        try {
+            const { data } = await axios.delete(`${backendUrl}/api/admin/nurses/${id}`, {
+                headers: { aToken }
+            });
 
             if (data.success) {
-                toast.success(data.message || "Administrative staff updated successfully");
-                await getAllAdministrativeStaff(); // Refresh the staff list
+                toast.success(data.message || "Nurse deleted successfully");
+                // Update the state to remove the deleted nurse
+                setNurses(prev => prev.filter(nurse => nurse._id !== id));
                 return { success: true };
             } else {
-                toast.error(data.message || "Failed to update administrative staff");
+                toast.error(data.message || "Failed to delete nurse");
                 return { success: false };
             }
         } catch (error) {
             toast.error(error.response?.data?.message || error.message);
+            console.error("Error deleting nurse:", error);
             return { success: false };
         }
     };
+
+    // const updateNurse = async (nurseId, formDataObj) => {
+    //     try {
+    //         const { data } = await axios.put(
+    //             `${backendUrl}/api/admin/nurses/${nurseId}`,
+    //             formDataObj,
+    //             { 
+    //                 headers: { 
+    //                     aToken,
+    //                     'Content-Type': 'multipart/form-data'
+    //                 } 
+    //             }
+    //         );
+
+    //         if (data.success) {
+    //             toast.success(data.message || "Nurse updated successfully");
+    //             await getAllNurses(); // Refresh the nurses list
+    //             return { success: true };
+    //         } else {
+    //             toast.error(data.message || "Failed to update nurse");
+    //             return { success: false };
+    //         }
+    //     } catch (error) {
+    //         toast.error(error.response?.data?.message || error.message);
+    //         console.error("Error updating nurse:", error);
+    //         return { success: false };
+    //     }
+    // };
 
     const value = {
         aToken, setAToken,
@@ -251,9 +293,11 @@ const AdminContextProvider = (props) => {
         patients, getAllPatients,
         deletePatient, updatePatient,
         administrativeStaff,
-        getAllAdministrativeStaff,
         deleteAdministrativeStaff,
-        updateAdministrativeStaff,
+        getAllAdministrativeStaff,
+        nurses,
+        deleteNurse,
+        getAllNurses,
     }
 
     return (

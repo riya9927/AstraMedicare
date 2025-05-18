@@ -17,7 +17,7 @@ const UserManagement = () => {
       title: 'Nurses',
       description: 'Nursing staff including RNs, LPNs, and nurse practitioners',
       icon: '🩺',
-      path: '/staff-management/nurses',
+      path: '/staff-management/nurse',
       color: 'bg-green-100 hover:bg-green-200',
       borderColor: 'border-green-300'
     },
