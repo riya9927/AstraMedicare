@@ -9,11 +9,23 @@ AstraMedicare is a full-stack Doctor Appointment Booking platform developed usin
 
 ## 🚀 Features
 
+### User Side
+
 - 🧑‍⚕️ Book online doctor consultations
 - 📅 Manage appointments (book, reschedule, cancel)
 - 📁 View and store electronic health records (EHR)
 - 🔐 User authentication (Signup/Login)
 - 📞 Contact and support page
+  
+### 🛠️ Admin Side Features
+
+- 📊 **Dashboard** – View key metrics, appointments, and activity logs  
+- 👥 **Staff Management** – Add, edit, or remove hospital staff  
+- 🩺 **Add Doctor** – Onboard new doctors with specialization, schedule, and contact info  
+- 📋 **Doctor List** – View and manage all registered doctors  
+- 🧑‍🤝‍🧑 **Add Patient** – Register patients with medical history and contact data  
+- 📄 **All Patients List** – Search, view, and filter patient records  
+- 📆 **Appointment Management** – Schedule, update, or cancel appointments 
 
 ---
 
