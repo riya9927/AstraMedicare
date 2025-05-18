@@ -29,7 +29,7 @@ const UpdateDoctor = ({ doctor, onClose, onUpdateSuccess }) => {
       setFormData({
         name: doctor.name || '',
         email: doctor.email || '',
-        password: '', // Empty password by default
+        password: '',
         speciality: doctor.speciality || '',
         degree: doctor.degree || '',
         experience: doctor.experience || '',
@@ -45,7 +45,7 @@ const UpdateDoctor = ({ doctor, onClose, onUpdateSuccess }) => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     if (type === 'checkbox') {
       setFormData({ ...formData, [name]: checked });
     } else if (name === 'experience' || name === 'fees') {
@@ -66,33 +66,33 @@ const UpdateDoctor = ({ doctor, onClose, onUpdateSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const formDataObj = new FormData();
-      
+
       // Only append image if a new one was selected
       if (docImg) {
         formDataObj.append('image', docImg);
       }
-      
+
       // Append all form fields
       formDataObj.append('name', formData.name);
       formDataObj.append('email', formData.email);
-      
+
       // Only append password if provided
       if (formData.password) {
         formDataObj.append('password', formData.password);
       }
-      
+
       formDataObj.append('experience', Number(formData.experience));
       formDataObj.append('fees', Number(formData.fees));
       formDataObj.append('about', formData.about);
       formDataObj.append('speciality', formData.speciality);
       formDataObj.append('degree', formData.degree);
       formDataObj.append('available', formData.available);
-      formDataObj.append('address', JSON.stringify({ 
-        line1: formData.address1, 
-        line2: formData.address2 
+      formDataObj.append('address', JSON.stringify({
+        line1: formData.address1,
+        line2: formData.address2
       }));
 
       const { data } = await axios.put(
@@ -121,24 +121,24 @@ const UpdateDoctor = ({ doctor, onClose, onUpdateSuccess }) => {
       <div className="bg-white rounded-xl p-8 w-full max-w-4xl shadow-lg animate-fade-in my-8 max-h-screen overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-2xl font-bold text-blue-700">Edit Doctor</h3>
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
           >
             &times;
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
             <label
               htmlFor="doc-img-edit"
               className="cursor-pointer w-40 h-40 bg-blue-50 rounded-lg flex items-center justify-center overflow-hidden border border-blue-200 hover:border-blue-400 transition"
             >
-              <img 
-                src={previewImg || assets.upload_area} 
-                alt="Doctor" 
-                className="w-full h-full object-cover" 
+              <img
+                src={previewImg || assets.upload_area}
+                alt="Doctor"
+                className="w-full h-full object-cover"
               />
             </label>
             <input
@@ -208,6 +208,13 @@ const UpdateDoctor = ({ doctor, onClose, onUpdateSuccess }) => {
                 <option value="Pediatricians">Pediatricians</option>
                 <option value="Neurologist">Neurologist</option>
                 <option value="Gastroenterologist">Gastroenterologist</option>
+                <option value="Cardiologist">Cardiologist</option>
+                <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+                <option value="ENT Specialist">ENT Specialist</option>
+                <option value="Psychiatrist">Psychiatrist</option>
+                <option value="Radiologist">Radiologist</option>
+                <option value="Pathologist">Pathologist</option>
+                <option value="Plastic Surgeon">Plastic Surgeon</option>
               </select>
             </div>
 
@@ -249,7 +256,7 @@ const UpdateDoctor = ({ doctor, onClose, onUpdateSuccess }) => {
                 className="w-full p-3 rounded-md bg-gray-100 text-gray-800 border border-gray-300"
               />
             </div>
-            
+
             <div>
               <label className="flex items-center space-x-2 mt-6">
                 <input

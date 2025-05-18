@@ -70,6 +70,14 @@ const DoctorsList = () => {
             <option value="Pediatricians">Pediatricians</option>
             <option value="Neurologist">Neurologist</option>
             <option value="Gastroenterologist">Gastroenterologist</option>
+            <option value="Cardiologist">Cardiologist</option>
+            <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+            <option value="ENT Specialist">ENT Specialist</option>
+            <option value="Psychiatrist">Psychiatrist</option>
+            <option value="Radiologist">Radiologist</option>
+            <option value="Pathologist">Pathologist</option>
+            <option value="Plastic Surgeon">Plastic Surgeon</option>
+
           </select>
         </div>
       </div>

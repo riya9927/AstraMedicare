@@ -50,7 +50,7 @@ const AddDoctor = () => {
       formData.append('name', name);
       formData.append('email', email);
       formData.append('password', password);
-      formData.append('experience',  Number(experience));
+      formData.append('experience', Number(experience));
       formData.append('fees', Number(fees));
       formData.append('about', about);
       formData.append('speciality', speciality);
@@ -70,7 +70,7 @@ const AddDoctor = () => {
 
 
       if (data.success) {
-        
+
         if (data.success) {
           toast.success(data.message)
           setDocImg(false)
@@ -188,6 +188,13 @@ const AddDoctor = () => {
               <option value="Pediatricians">Pediatricians</option>
               <option value="Neurologist">Neurologist</option>
               <option value="Gastroenterologist">Gastroenterologist</option>
+              <option value="Cardiologist">Cardiologist</option>
+              <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+              <option value="ENT Specialist">ENT Specialist</option>
+              <option value="Psychiatrist">Psychiatrist</option>
+              <option value="Radiologist">Radiologist</option>
+              <option value="Pathologist">Pathologist</option>
+              <option value="Plastic Surgeon">Plastic Surgeon</option>
             </select>
           </div>
 
