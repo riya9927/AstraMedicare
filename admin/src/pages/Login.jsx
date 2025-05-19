@@ -4,12 +4,13 @@ import { useContext } from 'react';
 import { AdminContext } from '../context/AdminContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [state, setState] = useState('Admin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const navigate = useNavigate();
   const {setAToken,backendUrl}=useContext(AdminContext)
 
   const onSubmitHandler=async(event)=>{
@@ -70,7 +71,7 @@ const Login = () => {
         </div>
 
         {/* Login Button */}
-        <button className="w-full bg-blue-500 text-white py-2 rounded-xl font-semibold hover:bg-blue-600 transition-all duration-300">
+        <button onClick={() => navigate('/admin-dashboard')} className="w-full bg-blue-500 text-white py-2 rounded-xl font-semibold hover:bg-blue-600 transition-all duration-300">
           Login
         </button>
 
