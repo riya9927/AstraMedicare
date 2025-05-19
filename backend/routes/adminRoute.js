@@ -30,6 +30,14 @@ import {
   getAllPharmacists,
   updatePharmacist,
   deletePharmacist,
+  addSupportStaff,
+  getAllSupportStaff,
+  updateSupportStaff,
+  deleteSupportStaff,
+  addITStaff,
+  getAllITStaff,
+  updateITStaff,
+  deleteITStaff
 } from '../controllers/adminStaffController.js'
 import upload from '../middlewares/multer.js'
 import authAdmin from '../middlewares/authAdmin.js'
@@ -68,5 +76,15 @@ adminRouter.post('/pharmacy/add', authAdmin, upload.single('image'), addPharmaci
 adminRouter.post('/pharmacy', authAdmin, getAllPharmacists);
 adminRouter.put('/pharmacy/:id', authAdmin, upload.single('image'), updatePharmacist);
 adminRouter.delete('/pharmacy/:id', authAdmin, deletePharmacist);
+// Support Staff routes
+adminRouter.post('/support/add', authAdmin, upload.single('image'), addSupportStaff);
+adminRouter.post('/support', authAdmin, getAllSupportStaff);
+adminRouter.put('/support/:id', authAdmin, upload.single('image'), updateSupportStaff);
+adminRouter.delete('/support/:id', authAdmin, deleteSupportStaff);
+// IT & Technical Staff routes
+adminRouter.post('/it/add', authAdmin, upload.single('image'), addITStaff);
+adminRouter.post('/it', authAdmin, getAllITStaff);
+adminRouter.put('/it/:id', authAdmin, upload.single('image'), updateITStaff);
+adminRouter.delete('/it/:id', authAdmin, deleteITStaff);
 
 export default adminRouter

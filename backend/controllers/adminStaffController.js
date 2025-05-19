@@ -6,6 +6,8 @@ import administrativeStaffModel from "../models/administrativeStaffModel.js";
 import nurseModel from "../models/nurseModel.js";
 import labTechnicianModel from "../models/labTechniciansModel.js";
 import pharmacistModel from "../models/pharmacistModel.js";
+import itTechnicalStaffModel from "../models/itTechnicalStaffModel.js";
+import supportStaffModel from "../models/supportStaffModel.js";
 
 // API for adding administrative staff
 const addAdministrativeStaff = async (req, res) => {
@@ -722,6 +724,368 @@ const deletePharmacist = async (req, res) => {
   }
 };
 
+// API for adding support staff
+const addSupportStaff = async (req, res) => {
+  try {
+    const {
+      name,
+      gender,
+      dateOfBirth,
+      contactNumber,
+      addressLine1,
+      addressLine2,
+      role,
+      shiftTimings,
+      supervisorName,
+      dateOfJoining,
+      basicSalary
+    } = req.body;
+    
+    const imageFile = req.file;
+
+    // Check for required fields
+    if (
+      !name ||
+      !gender ||
+      !dateOfBirth ||
+      !contactNumber ||
+      !addressLine1 ||
+      !role ||
+      !shiftTimings ||
+      !supervisorName ||
+      !dateOfJoining ||
+      !basicSalary
+    ) {
+      return res.json({ success: false, message: "Missing Required Details" });
+    }
+
+    // Validate contact number and email
+    if (!validator.isMobilePhone(contactNumber)) {
+      return res.json({ success: false, message: "Please enter a valid contact number" });
+    }
+    
+
+    // Handle image upload
+    let imageUrl = "";
+    if (imageFile) {
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+        resource_type: "image"
+      });
+      imageUrl = imageUpload.secure_url;
+    } else {
+      return res.json({ success: false, message: "Support Staff photo is required" });
+    }
+
+    // Prepare data for database
+    const staffData = {
+      photo: imageUrl,
+      name,
+      gender,
+      dateOfBirth: new Date(dateOfBirth),
+      contactNumber,
+      addressLine1,
+      addressLine2,
+      role,
+      shiftTimings,
+      supervisorName,
+      dateOfJoining: new Date(dateOfJoining),
+      basicSalary: Number(basicSalary)
+    };
+
+    // Create and save new support staff
+    const newStaff = new supportStaffModel(staffData);
+    await newStaff.save();
+    
+    res.json({ success: true, message: "Support Staff Added Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// API to get all support staff
+const getAllSupportStaff = async (req, res) => {
+  try {
+    const staffList = await supportStaffModel.find({});
+    res.json({ success: true, staffList });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// API to update support staff details
+const updateSupportStaff = async (req, res) => {
+  try {
+    const staffId = req.params.id;
+    const existingStaff = await supportStaffModel.findById(staffId);
+    
+    if (!existingStaff) {
+      return res.status(404).json({ success: false, message: "Support Staff not found" });
+    }
+
+    const {
+      name,
+      gender,
+      dateOfBirth,
+      contactNumber,
+      addressLine1,
+      addressLine2,
+      role,
+      shiftTimings,
+      supervisorName,
+      dateOfJoining,
+      basicSalary
+    } = req.body;
+
+    
+    if (contactNumber && !validator.isMobilePhone(contactNumber)) {
+      return res.json({ success: false, message: "Please enter a valid contact number" });
+    }
+
+    // Handle image update
+    let imageUrl = existingStaff.photo;
+    if (req.file) {
+      const imageUpload = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "image"
+      });
+      imageUrl = imageUpload.secure_url;
+    }
+
+    // Prepare updated data
+    const updatedData = {
+      photo: imageUrl
+    };
+
+    // Update fields if provided
+    if (name) updatedData.name = name;
+    if (gender) updatedData.gender = gender;
+    if (dateOfBirth) updatedData.dateOfBirth = new Date(dateOfBirth);
+    if (contactNumber) updatedData.contactNumber = contactNumber;
+    if (addressLine1) updatedData.addressLine1 = addressLine1;
+    if (addressLine2 !== undefined) updatedData.addressLine2 = addressLine2;
+    if (role) updatedData.role = role;
+    if (shiftTimings) updatedData.shiftTimings = shiftTimings;
+    if (supervisorName) updatedData.supervisorName = supervisorName;
+    if (dateOfJoining) updatedData.dateOfJoining = new Date(dateOfJoining);
+    if (basicSalary) updatedData.basicSalary = Number(basicSalary);
+
+    await supportStaffModel.findByIdAndUpdate(staffId, updatedData, { new: true });
+    res.json({ success: true, message: "Support Staff updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// API to delete support staff
+const deleteSupportStaff = async (req, res) => {
+  try {
+    const staffId = req.params.id;
+    const deleted = await supportStaffModel.findByIdAndDelete(staffId);
+    
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Support Staff not found" });
+    }
+    
+    res.json({ success: true, message: "Support Staff deleted successfully" });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// IT & Technical Staff Controller Functions
+// API for adding IT staff
+const addITStaff = async (req, res) => {
+  try {
+    const {
+      name,
+      gender,
+      dateOfBirth,
+      contactNumber,
+      addressLine1,
+      addressLine2,
+      emailID,
+      role,
+      dateOfJoining,
+      salary,
+    } = req.body;
+    
+    const imageFile = req.file;
+
+    // Check for required fields
+    if (
+      !name ||
+      !gender ||
+      !dateOfBirth ||
+      !contactNumber ||
+      !addressLine1 ||
+      !emailID ||
+      !role ||
+      !dateOfJoining ||
+      !salary
+    ) {
+      return res.json({ success: false, message: "Missing Required Details" });
+    }
+
+    // Check if staff with email already exists
+    const existingStaff = await itTechnicalStaffModel.findOne({ emailID });
+    if (existingStaff) {
+      return res.json({ success: false, message: "IT Staff with this email already exists" });
+    }
+
+    // Validate contact number and email
+    if (!validator.isMobilePhone(contactNumber)) {
+      return res.json({ success: false, message: "Please enter a valid contact number" });
+    }
+    
+    if (!validator.isEmail(emailID)) {
+      return res.json({ success: false, message: "Please enter a valid email" });
+    }
+
+    // Handle image upload
+    let imageUrl = "";
+    if (imageFile) {
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+        resource_type: "image"
+      });
+      imageUrl = imageUpload.secure_url;
+    } else {
+      return res.json({ success: false, message: "IT Staff photo is required" });
+    }
+
+    // Prepare data for database
+    const staffData = {
+      photo: imageUrl,
+      name,
+      gender,
+      dateOfBirth: new Date(dateOfBirth),
+      contactNumber,
+      addressLine1,
+      addressLine2,
+      emailID,
+      role,
+      dateOfJoining: new Date(dateOfJoining),
+      salary: Number(salary)
+    };
+
+    // Create and save new IT staff
+    const newStaff = new itTechnicalStaffModel(staffData);
+    await newStaff.save();
+    
+    res.json({ success: true, message: "IT Staff Added Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// API to get all IT staff
+const getAllITStaff = async (req, res) => {
+  try {
+    const staffList = await itTechnicalStaffModel.find({});
+    res.json({ success: true, staffList });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// API to update IT staff details
+const updateITStaff = async (req, res) => {
+  try {
+    const staffId = req.params.id;
+    const existingStaff = await itTechnicalStaffModel.findById(staffId);
+    
+    if (!existingStaff) {
+      return res.status(404).json({ success: false, message: "IT Staff not found" });
+    }
+
+    const {
+      name,
+      gender,
+      dateOfBirth,
+      contactNumber,
+      addressLine1,
+      addressLine2,
+      emailID,
+      role,
+      dateOfJoining,
+      salary
+    } = req.body;
+
+    // Check if email is being changed and already exists
+    if (emailID && emailID !== existingStaff.emailID) {
+      const duplicateEmail = await itTechnicalStaffModel.findOne({ emailID });
+      if (duplicateEmail) {
+        return res.json({ success: false, message: "Email already exists" });
+      }
+    }
+
+    // Validate email and contact number if provided
+    if (emailID && !validator.isEmail(emailID)) {
+      return res.json({ success: false, message: "Invalid email format" });
+    }
+    
+    if (contactNumber && !validator.isMobilePhone(contactNumber)) {
+      return res.json({ success: false, message: "Please enter a valid contact number" });
+    }
+
+    // Handle image update
+    let imageUrl = existingStaff.photo;
+    if (req.file) {
+      const imageUpload = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: "image"
+      });
+      imageUrl = imageUpload.secure_url;
+    }
+
+    // Prepare updated data
+    const updatedData = {
+      photo: imageUrl
+    };
+
+    // Update fields if provided
+    if (name) updatedData.name = name;
+    if (gender) updatedData.gender = gender;
+    if (dateOfBirth) updatedData.dateOfBirth = new Date(dateOfBirth);
+    if (contactNumber) updatedData.contactNumber = contactNumber;
+    if (addressLine1) updatedData.addressLine1 = addressLine1;
+    if (addressLine2 !== undefined) updatedData.addressLine2 = addressLine2;
+    if (emailID) updatedData.emailID = emailID;
+    if (role) updatedData.role = role;
+    if (dateOfJoining) updatedData.dateOfJoining = new Date(dateOfJoining);
+    if (salary) updatedData.salary = Number(salary);
+
+    await itTechnicalStaffModel.findByIdAndUpdate(staffId, updatedData, { new: true });
+    res.json({ success: true, message: "IT Staff updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// API to delete IT staff
+const deleteITStaff = async (req, res) => {
+  try {
+    const staffId = req.params.id;
+    const deleted = await itTechnicalStaffModel.findByIdAndDelete(staffId);
+    
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "IT Staff not found" });
+    }
+    
+    res.json({ success: true, message: "IT Staff deleted successfully" });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
 export { addAdministrativeStaff, getAllAdministrativeStaff, updateAdministrativeStaff, deleteAdministrativeStaff, 
     addNurse, getAllNurses, updateNurse, deleteNurse, addLabTechnician, getAllLabTechnicians, updateLabTechnician, 
-    deleteLabTechnician, addPharmacist, getAllPharmacists,updatePharmacist,deletePharmacist };
+    deleteLabTechnician, addPharmacist, getAllPharmacists,updatePharmacist,deletePharmacist,addSupportStaff,
+  getAllSupportStaff, updateSupportStaff, deleteSupportStaff, addITStaff, getAllITStaff, updateITStaff, deleteITStaff };

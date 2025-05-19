@@ -16,6 +16,8 @@ const AdminContextProvider = (props) => {
     const [nurses, setNurses] = useState([]);
     const [pharmacist,setPharmacist] = useState([]);
     const [labTechnicians, setLabTechnicians] = useState([]);
+    const [supportStaff,setSupportStaff] = useState([]);
+    const [itTechnicalStaff, setItTechnicalStaff] = useState([]);
     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
     const getAllDoctors = async () => {
@@ -324,6 +326,72 @@ const AdminContextProvider = (props) => {
         }
     };
 
+     const getAllsupportStaff = async () => {
+        try {
+            const { data } = await axios.post(backendUrl + '/api/admin/support', {}, { headers: { aToken } });
+            if (data.success) {
+                setSupportStaff(data.staffList);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
+    };
+    const deleteSupportStaff = async (id) => {
+        try {
+            const { data } = await axios.delete(`${backendUrl}/api/admin/support/${id}`, {
+                headers: { aToken }
+            });
+
+            if (data.success) {
+                toast.success(data.message || "Support Staff deleted successfully");
+                setSupportStaff(prev => prev.filter(supportStaff => supportStaff._id !== id));
+                return { success: true };
+            } else {
+                toast.error(data.message || "Failed to delete Support Staff");
+                return { success: false };
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+            console.error("Error deleting Support Staff:", error);
+            return { success: false };
+        }
+    };
+    const getAllItTechnicalStaff = async () => {
+        try {
+            const { data } = await axios.post(backendUrl + '/api/admin/it', {}, { headers: { aToken } });
+            if (data.success) {
+                setItTechnicalStaff(data.staffList);
+                
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
+    };
+     const deleteItTechnicalStaff = async (id) => {
+        try {
+            const { data } = await axios.delete(`${backendUrl}/api/admin/it/${id}`, {
+                headers: { aToken }
+            });
+
+            if (data.success) {
+                toast.success(data.message || "It-Technical Staff deleted successfully");
+                setItTechnicalStaff(prev => prev.filter(itTechnicalStaff=> itTechnicalStaff._id !== id));
+                return { success: true };
+            } else {
+                toast.error(data.message || "Failed to delete It-Technical Staff");
+                return { success: false };
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+            console.error("Error deleting It-Technical Staff:", error);
+            return { success: false };
+        }
+    };
+
     const value = {
         aToken, setAToken,
         backendUrl, doctors,
@@ -343,7 +411,10 @@ const AdminContextProvider = (props) => {
         labTechnicians,
         getLabTechnicians, deleteLabTechnician,
         pharmacist,
-        getAllPharmacist,deletePharmacist
+        getAllPharmacist,deletePharmacist,
+        supportStaff,itTechnicalStaff,
+        getAllsupportStaff,getAllItTechnicalStaff,
+        deleteSupportStaff,deleteItTechnicalStaff
     }
 
     return (

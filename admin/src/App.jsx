@@ -24,6 +24,10 @@ import LabTechnician from './pages/Admin/LabTechnician';
 import AddLabTechnician from './pages/Admin/AddLabTechnician';
 import Pharmacist from './pages/Admin/Pharmacist';
 import AddPharmacist from './pages/Admin/AddPharmacist';
+import ItTechnicalStaff from './pages/Admin/ItTechnicalStaff'
+import AddItTechnicalStaff from './pages/Admin/AddItTechnicalStaff'
+import SupportStaff from './pages/Admin/SupportStaff'
+import AddSupportStaff from './pages/Admin/AddSupportStaff'
 
 
 const App = () => {
@@ -53,6 +57,10 @@ const App = () => {
           <Route path='/staff-management/add-lab' element={<AddLabTechnician />} />
           <Route path='/staff-management/pharmacy' element={<Pharmacist />} />
           <Route path='/staff-management/add-pharmacy' element={<AddPharmacist />} />
+          <Route path='/staff-management/support' element={<SupportStaff />} />
+          <Route path='/staff-management/add-support' element={<AddSupportStaff />} />
+          <Route path='/staff-management/it' element={<ItTechnicalStaff />} />
+          <Route path='/staff-management/add-it' element={<AddItTechnicalStaff />} />
 
         </Routes>
       </div>
