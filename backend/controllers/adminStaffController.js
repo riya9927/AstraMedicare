@@ -4,12 +4,13 @@ import { v2 as cloudinary } from "cloudinary";
 import jwt from "jsonwebtoken";
 import administrativeStaffModel from "../models/administrativeStaffModel.js";
 import nurseModel from "../models/nurseModel.js";
+import labTechnicianModel from "../models/labTechniciansModel.js";
 
 // API for adding administrative staff
 const addAdministrativeStaff = async (req, res) => {
     try {
         const {
-            
+
             fullName,
             gender,
             dateOfBirth,
@@ -25,7 +26,7 @@ const addAdministrativeStaff = async (req, res) => {
 
         const imageFile = req.file;
 
-        if ( !fullName || !gender || !dateOfBirth || !contactNumber ||
+        if (!fullName || !gender || !dateOfBirth || !contactNumber ||
             !addressLine1 || !role || !email || !shiftTimings ||
             !dateOfJoining || !salaryDetails) {
             return res.json({ success: false, message: "Missing Required Details" });
@@ -351,4 +352,184 @@ const deleteNurse = async (req, res) => {
 };
 
 
-export { addAdministrativeStaff, getAllAdministrativeStaff, updateAdministrativeStaff, deleteAdministrativeStaff, addNurse, getAllNurses, updateNurse, deleteNurse};
+// API for adding lab technician
+const addLabTechnician = async (req, res) => {
+    try {
+        const {
+            name,
+            gender,
+            dateOfBirth,
+            contactNumber,
+            addressLine1,
+            addressLine2,
+            email,
+            qualifications,
+            shiftDetails,
+            supervisedDoctors,
+            salaryDetails
+        } = req.body;
+        const imageFile = req.file;
+
+        if (
+            !name ||
+            !gender ||
+            !dateOfBirth ||
+            !contactNumber ||
+            !addressLine1 ||
+            !email ||
+            !shiftDetails ||
+            !salaryDetails
+        ) {
+            return res.json({ success: false, message: "Missing Required Details" });
+        }
+
+        const existingTechnician = await labTechnicianModel.findOne({ email });
+        if (existingTechnician) {
+            return res.json({ success: false, message: "Lab Technician with this email already exists" });
+        }
+
+        if (!validator.isMobilePhone(contactNumber)) {
+            return res.json({ success: false, message: "Please enter a valid contact number" });
+        }
+
+        if (!validator.isEmail(email)) {
+            return res.json({ success: false, message: "Please enter a valid email" });
+        }
+
+        let imageUrl = "";
+        if (imageFile) {
+            const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+                resource_type: "image"
+            });
+            imageUrl = imageUpload.secure_url;
+        } else {
+            return res.json({ success: false, message: "Lab Technician photo is required" });
+        }
+
+        const technicianData = {
+            photo: imageUrl,
+            name,
+            gender,
+            dateOfBirth: new Date(dateOfBirth),
+            contactNumber,
+            addressLine1,
+            addressLine2,
+            email,
+            qualifications,
+            shiftDetails,
+            supervisedDoctors: supervisedDoctors || [],
+            salaryDetails: Number(salaryDetails)
+        };
+
+        const newTechnician = new labTechnicianModel(technicianData);
+        await newTechnician.save();
+
+        res.json({ success: true, message: "Lab Technician Added Successfully" });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// API to get all lab technicians
+const getAllLabTechnicians = async (req, res) => {
+    try {
+        const technicianList = await labTechnicianModel.find({})
+            .populate('supervisedDoctors', 'name speciality image');
+
+        res.json({ success: true, technicianList });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// API to update lab technician details
+const updateLabTechnician = async (req, res) => {
+    try {
+        const technicianId = req.params.id;
+        const existingTechnician = await labTechnicianModel.findById(technicianId);
+
+        if (!existingTechnician) {
+            return res.status(404).json({ success: false, message: "Lab Technician not found" });
+        }
+
+        const {
+            name,
+            gender,
+            dateOfBirth,
+            contactNumber,
+            addressLine1,
+            addressLine2,
+            email,
+            qualifications,
+            shiftDetails,
+            supervisedDoctors,
+            salaryDetails
+        } = req.body;
+
+        if (email && email !== existingTechnician.email) {
+            const duplicateEmail = await labTechnicianModel.findOne({ email });
+            if (duplicateEmail) {
+                return res.json({ success: false, message: "Email already exists" });
+            }
+        }
+        if (email && !validator.isEmail(email)) {
+            return res.json({ success: false, message: "Invalid email format" });
+        }
+
+        if (contactNumber && !validator.isMobilePhone(contactNumber)) {
+            return res.json({ success: false, message: "Please enter a valid contact number" });
+        }
+
+        let imageUrl = existingTechnician.photo;
+        if (req.file) {
+            const imageUpload = await cloudinary.uploader.upload(req.file.path, {
+                resource_type: "image"
+            });
+            imageUrl = imageUpload.secure_url;
+        }
+
+        const updatedData = {
+            photo: imageUrl
+        };
+
+        if (name) updatedData.name = name;
+        if (gender) updatedData.gender = gender;
+        if (dateOfBirth) updatedData.dateOfBirth = new Date(dateOfBirth);
+        if (contactNumber) updatedData.contactNumber = contactNumber;
+        if (addressLine1) updatedData.addressLine1 = addressLine1;
+        if (addressLine2 !== undefined) updatedData.addressLine2 = addressLine2;
+        if (email) updatedData.email = email;
+        if (qualifications) updatedData.qualifications = qualifications;
+        if (shiftDetails) updatedData.shiftDetails = shiftDetails;
+        if (supervisedDoctors) updatedData.supervisedDoctors = supervisedDoctors;
+        if (salaryDetails) updatedData.salaryDetails = Number(salaryDetails);
+
+        await labTechnicianModel.findByIdAndUpdate(technicianId, updatedData, { new: true });
+
+        res.json({ success: true, message: "Lab Technician updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// API to delete lab technician
+const deleteLabTechnician = async (req, res) => {
+    try {
+        const technicianId = req.params.id;
+        const deleted = await labTechnicianModel.findByIdAndDelete(technicianId);
+
+        if (!deleted) {
+            return res.status(404).json({ success: false, message: "Lab Technician not found" });
+        }
+
+        res.json({ success: true, message: "Lab Technician deleted successfully" });
+    } catch (error) {
+        console.error("Delete error:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export { addAdministrativeStaff, getAllAdministrativeStaff, updateAdministrativeStaff, deleteAdministrativeStaff, addNurse, getAllNurses, updateNurse, deleteNurse, addLabTechnician, getAllLabTechnicians, updateLabTechnician, deleteLabTechnician };

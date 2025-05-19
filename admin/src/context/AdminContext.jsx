@@ -14,6 +14,7 @@ const AdminContextProvider = (props) => {
     const [dashData, setDashData] = useState(false)
     const [administrativeStaff, setAdministrativeStaff] = useState([]);
     const [nurses, setNurses] = useState([]);
+    const [labTechnicians, setLabTechnicians] = useState([]);
     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
     const getAllDoctors = async () => {
@@ -218,7 +219,7 @@ const AdminContextProvider = (props) => {
         }
     };
 
-     const getAllNurses = async () => {
+    const getAllNurses = async () => {
         try {
             const { data } = await axios.post(backendUrl + '/api/admin/nurses', {}, { headers: { aToken } });
             if (data.success) {
@@ -239,7 +240,6 @@ const AdminContextProvider = (props) => {
 
             if (data.success) {
                 toast.success(data.message || "Nurse deleted successfully");
-                // Update the state to remove the deleted nurse
                 setNurses(prev => prev.filter(nurse => nurse._id !== id));
                 return { success: true };
             } else {
@@ -253,33 +253,41 @@ const AdminContextProvider = (props) => {
         }
     };
 
-    // const updateNurse = async (nurseId, formDataObj) => {
-    //     try {
-    //         const { data } = await axios.put(
-    //             `${backendUrl}/api/admin/nurses/${nurseId}`,
-    //             formDataObj,
-    //             { 
-    //                 headers: { 
-    //                     aToken,
-    //                     'Content-Type': 'multipart/form-data'
-    //                 } 
-    //             }
-    //         );
+    // Get all lab technicians from the backend
+    const getLabTechnicians = async () => {
+        try {
+            const { data } = await axios.post(backendUrl + '/api/admin/lab', {}, { headers: { aToken } });
+            if (data.success) {
+                setLabTechnicians(data.technicianList);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
+    };
 
-    //         if (data.success) {
-    //             toast.success(data.message || "Nurse updated successfully");
-    //             await getAllNurses(); // Refresh the nurses list
-    //             return { success: true };
-    //         } else {
-    //             toast.error(data.message || "Failed to update nurse");
-    //             return { success: false };
-    //         }
-    //     } catch (error) {
-    //         toast.error(error.response?.data?.message || error.message);
-    //         console.error("Error updating nurse:", error);
-    //         return { success: false };
-    //     }
-    // };
+    // Delete a lab technician by ID
+    const deleteLabTechnician = async (id) => {
+        try {
+            const { data } = await axios.delete(`${backendUrl}/api/admin/lab/${id}`, {
+                headers: { aToken }
+            });
+
+            if (data.success) {
+                toast.success(data.message || "Lab technician deleted successfully");
+                setLabTechnicians(prev => prev.filter(technician => technician._id !== id));
+                return { success: true };
+            } else {
+                toast.error(data.message || "Failed to delete lab technician");
+                return { success: false };
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+            console.error("Error deleting lab technician:", error);
+            return { success: false };
+        }
+    };
 
     const value = {
         aToken, setAToken,
@@ -296,8 +304,9 @@ const AdminContextProvider = (props) => {
         deleteAdministrativeStaff,
         getAllAdministrativeStaff,
         nurses,
-        deleteNurse,
-        getAllNurses,
+        deleteNurse, getAllNurses,
+        labTechnicians,
+        getLabTechnicians, deleteLabTechnician,
     }
 
     return (

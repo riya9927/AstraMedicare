@@ -20,6 +20,8 @@ import AdministrativeStaff from './pages/Admin/AdministrativeStaff';
 import AddAdministrativeStaff from './pages/Admin/AddAdministrativeStaff';
 import Nurse from './pages/Admin/Nurse';
 import AddNurse from './pages/Admin/AddNurse';
+import LabTechnician from './pages/Admin/LabTechnician';
+import AddLabTechnician from './pages/Admin/AddLabTechnician';
 
 
 const App = () => {
@@ -45,6 +47,8 @@ const App = () => {
           <Route path='/staff-management/add-administrative' element={<AddAdministrativeStaff />} />
           <Route path='/staff-management/nurse' element={<Nurse />}/>
           <Route path='/staff-management/add-nurse' element={<AddNurse />} />
+          <Route path='/staff-management/lab' element={<LabTechnician />} />
+          <Route path='/staff-management/add-lab' element={<AddLabTechnician />} />
 
         </Routes>
       </div>
