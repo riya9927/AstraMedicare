@@ -14,6 +14,7 @@ const AdminContextProvider = (props) => {
     const [dashData, setDashData] = useState(false)
     const [administrativeStaff, setAdministrativeStaff] = useState([]);
     const [nurses, setNurses] = useState([]);
+    const [pharmacist,setPharmacist] = useState([]);
     const [labTechnicians, setLabTechnicians] = useState([]);
     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
@@ -289,6 +290,40 @@ const AdminContextProvider = (props) => {
         }
     };
 
+    const getAllPharmacist = async () => {
+        try {
+            const { data } = await axios.post(backendUrl + '/api/admin/pharmacy', {}, { headers: { aToken } });
+            if (data.success) {
+                setPharmacist(data.pharmacistList);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
+    };
+
+    const deletePharmacist = async (id) => {
+        try {
+            const { data } = await axios.delete(`${backendUrl}/api/admin/pharmacy/${id}`, {
+                headers: { aToken }
+            });
+
+            if (data.success) {
+                toast.success(data.message || "Pharmacist deleted successfully");
+                setPharmacist(prev => prev.filter(pharmacist => pharmacist._id !== id));
+                return { success: true };
+            } else {
+                toast.error(data.message || "Failed to delete Pharmacist");
+                return { success: false };
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+            console.error("Error deleting Pharmacist:", error);
+            return { success: false };
+        }
+    };
+
     const value = {
         aToken, setAToken,
         backendUrl, doctors,
@@ -307,6 +342,8 @@ const AdminContextProvider = (props) => {
         deleteNurse, getAllNurses,
         labTechnicians,
         getLabTechnicians, deleteLabTechnician,
+        pharmacist,
+        getAllPharmacist,deletePharmacist
     }
 
     return (

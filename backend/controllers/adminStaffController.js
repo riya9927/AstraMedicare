@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import administrativeStaffModel from "../models/administrativeStaffModel.js";
 import nurseModel from "../models/nurseModel.js";
 import labTechnicianModel from "../models/labTechniciansModel.js";
+import pharmacistModel from "../models/pharmacistModel.js";
 
 // API for adding administrative staff
 const addAdministrativeStaff = async (req, res) => {
@@ -532,4 +533,195 @@ const deleteLabTechnician = async (req, res) => {
     }
 };
 
-export { addAdministrativeStaff, getAllAdministrativeStaff, updateAdministrativeStaff, deleteAdministrativeStaff, addNurse, getAllNurses, updateNurse, deleteNurse, addLabTechnician, getAllLabTechnicians, updateLabTechnician, deleteLabTechnician };
+// API for adding pharmacist
+const addPharmacist = async (req, res) => {
+  try {
+    const {
+      name,
+      gender,
+      dateOfBirth,
+      contactNumber,
+      addressLine1,
+      addressLine2,
+      email,
+      shiftDetails,
+      qualifications,
+      dateOfJoining,
+      salaryDetails
+    } = req.body;
+    
+    const imageFile = req.file;
+    
+    // Validate required fields
+    if (
+      !name ||
+      !gender ||
+      !dateOfBirth ||
+      !contactNumber ||
+      !addressLine1 ||
+      !email ||
+      !shiftDetails ||
+      !dateOfJoining ||
+      !salaryDetails
+    ) {
+      return res.json({ success: false, message: "Missing Required Details" });
+    }
+    
+    // Check for existing pharmacist with same email
+    const existingPharmacist = await pharmacistModel.findOne({ email });
+    if (existingPharmacist) {
+      return res.json({ success: false, message: "Pharmacist with this email already exists" });
+    }
+    
+    // Validate contact number and email
+    if (!validator.isMobilePhone(contactNumber)) {
+      return res.json({ success: false, message: "Please enter a valid contact number" });
+    }
+    
+    if (!validator.isEmail(email)) {
+      return res.json({ success: false, message: "Please enter a valid email." });
+    }
+    
+    // Handle image upload
+    let imageUrl = "";
+    if (imageFile) {
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path, { 
+        resource_type: "image" 
+      });
+      imageUrl = imageUpload.secure_url;
+    } else {
+      return res.json({ success: false, message: "Pharmacist photo is required" });
+    }
+    
+    const pharmacistData = {
+      photo: imageUrl,
+      name,
+      gender,
+      dateOfBirth: new Date(dateOfBirth),
+      contactNumber,
+      addressLine1,
+      addressLine2,
+      email,
+      shiftDetails,
+      qualifications,
+      dateOfJoining: new Date(dateOfJoining),
+      salaryDetails: Number(salaryDetails)
+    };
+    
+    const newPharmacist = new pharmacistModel(pharmacistData);
+    await newPharmacist.save();
+    
+    res.json({ success: true, message: "Pharmacist Added Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// API to get all pharmacists
+const getAllPharmacists = async (req, res) => {
+  try {
+    const pharmacistList = await pharmacistModel.find({});
+    res.json({ success: true, pharmacistList });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// API to update pharmacist details
+const updatePharmacist = async (req, res) => {
+  try {
+    const pharmacistId = req.params.id;
+    const existingPharmacist = await pharmacistModel.findById(pharmacistId);
+    
+    if (!existingPharmacist) {
+      return res.status(404).json({ success: false, message: "Pharmacist not found" });
+    }
+    
+    const {
+      name,
+      gender,
+      dateOfBirth,
+      contactNumber,
+      addressLine1,
+      addressLine2,
+      email,
+      shiftDetails,
+      qualifications,
+      dateOfJoining,
+      salaryDetails
+    } = req.body;
+    
+    // Check if email is being changed and already exists
+    if (email && email !== existingPharmacist.email) {
+      const duplicateEmail = await pharmacistModel.findOne({ email });
+      if (duplicateEmail) {
+        return res.json({ success: false, message: "Email already exists" });
+      }
+    }
+    
+    // Validate email and contact number if provided
+    if (email && !validator.isEmail(email)) {
+      return res.json({ success: false, message: "Invalid email format" });
+    }
+    
+    if (contactNumber && !validator.isMobilePhone(contactNumber)) {
+      return res.json({ success: false, message: "Please enter a valid contact number" });
+    }
+    
+    // Handle image update
+    let imageUrl = existingPharmacist.photo;
+    if (req.file) {
+      const imageUpload = await cloudinary.uploader.upload(req.file.path, { 
+        resource_type: "image" 
+      });
+      imageUrl = imageUpload.secure_url;
+    }
+    
+    const updatedData = {
+      photo: imageUrl
+    };
+    
+    // Update fields if provided
+    if (name) updatedData.name = name;
+    if (gender) updatedData.gender = gender;
+    if (dateOfBirth) updatedData.dateOfBirth = new Date(dateOfBirth);
+    if (contactNumber) updatedData.contactNumber = contactNumber;
+    if (addressLine1) updatedData.addressLine1 = addressLine1;
+    if (addressLine2 !== undefined) updatedData.addressLine2 = addressLine2;
+    if (email) updatedData.email = email;
+    if (shiftDetails) updatedData.shiftDetails = shiftDetails;
+    if (qualifications !== undefined) updatedData.qualifications = qualifications;
+    if (dateOfJoining) updatedData.dateOfJoining = new Date(dateOfJoining);
+    if (salaryDetails) updatedData.salaryDetails = Number(salaryDetails);
+    
+    await pharmacistModel.findByIdAndUpdate(pharmacistId, updatedData, { new: true });
+    
+    res.json({ success: true, message: "Pharmacist updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// API to delete pharmacist
+const deletePharmacist = async (req, res) => {
+  try {
+    const pharmacistId = req.params.id;
+    const deleted = await pharmacistModel.findByIdAndDelete(pharmacistId);
+    
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Pharmacist not found" });
+    }
+    
+    res.json({ success: true, message: "Pharmacist deleted successfully" });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export { addAdministrativeStaff, getAllAdministrativeStaff, updateAdministrativeStaff, deleteAdministrativeStaff, 
+    addNurse, getAllNurses, updateNurse, deleteNurse, addLabTechnician, getAllLabTechnicians, updateLabTechnician, 
+    deleteLabTechnician, addPharmacist, getAllPharmacists,updatePharmacist,deletePharmacist };

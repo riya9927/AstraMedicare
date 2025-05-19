@@ -26,6 +26,10 @@ import {
   getAllLabTechnicians,
   updateLabTechnician,
   deleteLabTechnician,
+  addPharmacist,
+  getAllPharmacists,
+  updatePharmacist,
+  deletePharmacist,
 } from '../controllers/adminStaffController.js'
 import upload from '../middlewares/multer.js'
 import authAdmin from '../middlewares/authAdmin.js'
@@ -59,5 +63,10 @@ adminRouter.post('/lab/add', authAdmin, upload.single('image'), addLabTechnician
 adminRouter.post('/lab', authAdmin, getAllLabTechnicians);
 adminRouter.put('/lab/:id', authAdmin, upload.single('image'), updateLabTechnician);
 adminRouter.delete('/lab/:id', authAdmin, deleteLabTechnician);
+// Pharmacists routes
+adminRouter.post('/pharmacy/add', authAdmin, upload.single('image'), addPharmacist);
+adminRouter.post('/pharmacy', authAdmin, getAllPharmacists);
+adminRouter.put('/pharmacy/:id', authAdmin, upload.single('image'), updatePharmacist);
+adminRouter.delete('/pharmacy/:id', authAdmin, deletePharmacist);
 
 export default adminRouter

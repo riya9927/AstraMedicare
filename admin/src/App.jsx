@@ -22,6 +22,8 @@ import Nurse from './pages/Admin/Nurse';
 import AddNurse from './pages/Admin/AddNurse';
 import LabTechnician from './pages/Admin/LabTechnician';
 import AddLabTechnician from './pages/Admin/AddLabTechnician';
+import Pharmacist from './pages/Admin/Pharmacist';
+import AddPharmacist from './pages/Admin/AddPharmacist';
 
 
 const App = () => {
@@ -49,6 +51,8 @@ const App = () => {
           <Route path='/staff-management/add-nurse' element={<AddNurse />} />
           <Route path='/staff-management/lab' element={<LabTechnician />} />
           <Route path='/staff-management/add-lab' element={<AddLabTechnician />} />
+          <Route path='/staff-management/pharmacy' element={<Pharmacist />} />
+          <Route path='/staff-management/add-pharmacy' element={<AddPharmacist />} />
 
         </Routes>
       </div>
