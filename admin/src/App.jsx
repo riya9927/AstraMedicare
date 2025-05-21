@@ -28,18 +28,25 @@ import ItTechnicalStaff from './pages/Admin/ItTechnicalStaff'
 import AddItTechnicalStaff from './pages/Admin/AddItTechnicalStaff'
 import SupportStaff from './pages/Admin/SupportStaff'
 import AddSupportStaff from './pages/Admin/AddSupportStaff'
+import { DoctorContext } from './context/DoctorContext'; 
+import DocDashboard from './pages/Doctor/DocDashboard';
+import DocAppointment from './pages/Doctor/DocAppointment';
+import DocProfile from './pages/Doctor/DocProfile';
+import MainSidebar from './components/MainSidebar';
 
 
 const App = () => {
   const { aToken } = useContext(AdminContext)
-  return aToken ? (
+  const { dToken } = useContext (DoctorContext) 
+  return aToken || dToken ? (
     <div className='bg-[#F8F9FD]'>
       <ToastContainer />
       <Navbar />
       <div className='flex items-start'>
-        <Sidebar />
+        <MainSidebar />
         <Routes>
           <Route path='/' element={<></>} />
+          <Route path='/login' element={<Login />} />
           <Route path='/admin-dashboard' element={<Dashboard />} />
           <Route path='/all-appointments' element={<AllAppointments />} />
           <Route path='/add-doctor' element={<AddDoctor />} />
@@ -61,6 +68,10 @@ const App = () => {
           <Route path='/staff-management/add-support' element={<AddSupportStaff />} />
           <Route path='/staff-management/it' element={<ItTechnicalStaff />} />
           <Route path='/staff-management/add-it' element={<AddItTechnicalStaff />} />
+          <Route path='/doctor-dashboard' element={<DocDashboard />} /> 
+          <Route path='/doctor-appointments' element={<DocAppointment />} /> 
+          <Route path='/doctor-profile' element={<DocProfile />} />
+
 
         </Routes>
       </div>

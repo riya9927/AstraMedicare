@@ -2,10 +2,11 @@ import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AdminContext } from '../context/AdminContext'
 import { assets } from '../assets/assets'
+import { DoctorContext } from '../context/DoctorContext';
 
 const Sidebar = () => {
   const { aToken } = useContext(AdminContext)
-
+  
   const navItems = [
     { to: '/admin-dashboard', label: 'Dashboard', icon: assets.home_icon },
     { to: '/staff-management', label: 'Staff Management', icon: assets.people_icon },
@@ -14,7 +15,7 @@ const Sidebar = () => {
     { to: '/add-patient', label: 'Add Patient', icon: assets.add_icon },
     { to: '/patients-list', label: 'All Patients List', icon: assets.people_icon },
     { to: '/all-appointments', label: 'Appointment Management', icon: assets.appointment_icon },
-    { to: '/billing', label: 'Billing & Invoicing', icon: assets.billing_icon || assets.add_icon }, // fallback icon
+    { to: '/billing', label: 'Billing & Invoicing', icon: assets.billing_icon || assets.add_icon }, 
   ]
 
   return (
